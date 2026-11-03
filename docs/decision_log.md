@@ -3,7 +3,7 @@
 Changes to earlier decisions are new entries that point to the old one ("Replaces D#"). Nothing is deleted.
 "TO CONFIRM" = not stated in our documents yet. "—" in "Who decided" = not recorded, by team choice.
 
-Last updated: 2026-11-03
+Last updated: 2026-11-04 (D20–D27 restored from `HANDOFF_for_Baraa.md`, section 12)
 
 | ID | Date | Decision | Why | Alternatives rejected (and why) | Who decided | Applies to |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -26,6 +26,18 @@ Last updated: 2026-11-03
 | D17 | TO CONFIRM (by 2026-11-03) | Story told as 5 acts (big picture → where → building's life → nature of danger → limits/impact) | Lab 5 storytelling: context → insight → action | — | TO CONFIRM | Website story |
 | D18 | TO CONFIRM (by 2026-11-03) | Each chart is one function in shared `charts.py`, used by notebook and website | One source of truth for charts | — | TO CONFIRM | Notebook, website |
 | D19 | 2026-11-03 | Repo named `nyc-housing-street-safety`, public on GitHub | TO CONFIRM | TO CONFIRM | Mohamed Nazmy | Repo, submission |
+| D20 | 2026-11-03 | Repo layout: `app/`, `data/raw/`, `data/processed/`, `docs/`, `notebooks/`, `src/` | Raw and processed data kept apart; shared code in `src` | — | Mohamed Nazmy | Repo |
+| D21 | 2026-11-03 | Logs edited in Mohamed's local folder; repo holds copies | TO CONFIRM | Edit in repo | Mohamed Nazmy | Logs |
+| D22 | 2026-11-03 | Postpone `charts.py` contract until before others code (done in `7ab0454`) | Nobody else working yet | Send conventions now | Mohamed Nazmy | `src/charts.py` |
+| D23 | 2026-11-03 | Setup cell = brief's Listing 1 as given (no raw snapshot) | TO CONFIRM | Extended cell + raw snapshot in `data/raw` | Mohamed Nazmy | Notebook setup |
+| D24 | 2026-11-03 | Members add their sections directly to the shared notebook | TO CONFIRM | Mohamed merges all | TO CONFIRM | Notebook |
+| D25 | 2026-11-03 | Q1/Q2 work waits for cleaning + integration | Needs joined tables | Start on dummy data | Mohamed Nazmy | Q1, Q2 |
+| D26 | 2026-11-03 | Postpone TA population question (drafts ready). Replaced by D29 | TO CONFIRM | Send now | Mohamed Nazmy | Q1, Q10, Q12 |
+| D27 | 2026-11-04 | Mohamed passes work to Baraa; which tasks move: TO CONFIRM | TO CONFIRM | — | Mohamed Nazmy | Whole project |
+| D28 | 2026-11-04 | Website hosted on Vercel (not Render). Framework stays Dash | TO CONFIRM | Render (earlier proposal) | Baraa Tantawy | Website, deployment |
+| D29 | 2026-11-04 | No population data. Do not ask the TA. ZIP size differences become a stated limitation. Replaces D26 | Keeps to "exactly one dataset per domain" | Add Census ACS population as reference data (needed TA approval) | Baraa Tantawy | Q1, Q10, Q12, story limits |
+| D30 | 2026-11-04 | Severity dropdown switches the **measure**, not the rows: All = serious harm (severe injuries + deaths), "Severe injuries" = severe injuries only, "Deaths" = fatalities only. Charts that count crashes (e.g. Q3, Q4) sum the chosen measure instead | Counts people harmed, the same unit as D4; works on the ZIP tables that already have `severe_injuries` and `fatalities`; no extra columns or row filtering needed | Keep only crashes without / with a death: mixes up crashes and people, a crash with both a death and a severe injury is hard to place, needs new columns in every aggregated table | Baraa Tantawy (on Claude's recommendation) | `src/charts.py`, `docs/data_dictionary.md`, all charts using severity |
+| D31 | 2026-11-04 | Housing-type filter on ZIP and borough tables switches the units column (`units_column` helper); `units_all` added to `zip_year`, `zip_month`, `borough_year`; `borough_year.units_completed` split into `units_all` / `units_new_construction` / `units_preservation`. Contract rule added: a chart always returns a figure, even with no data | Those tables have no `construction_type` column, so the filter did nothing on them | Add `construction_type` rows to the ZIP tables (doubles their size) | Mohamed Nazmy | `src/charts.py`, `docs/data_dictionary.md` (commit `453f706`) |
 
 ## Open decisions (not made yet)
 
@@ -33,6 +45,7 @@ Last updated: 2026-11-03
 | --- | --- | --- |
 | Filter list | Borough, Year, Housing type, Crash severity + search box (proposal) | Story doc |
 | Year filter for fixed-window charts (Q2, Q7, Q12) | Ignore the filter, or show a note | Story doc |
-| Framework and host | Dash + Render (proposal) | Story doc |
-| Population per ZIP (Census ACS) as reference data | Ask TA | Research Questions doc, Story doc |
+| Year filter on `buildings` (no `year` column) | Owners define it, or add `completion_year` | charts.py contract |
+| Q1 and the housing-type filter | Q1 owner decides | charts.py contract |
+| Where logs are edited after the handoff | Repo `docs/` (suggested) | Handoff |
 | Final title and 2–3 headline findings | After charts run | Story doc |
