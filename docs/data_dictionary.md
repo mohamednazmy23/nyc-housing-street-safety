@@ -23,5 +23,5 @@ Shared tables in `data/processed/`. Chart functions receive them as `data["<tabl
 ## Definitions
 - serious_harm = severe_injuries + fatalities
 - units_all = units_new_construction + units_preservation
-- Severity filter: "All" → serious_harm, "Severe injury" → severe_injuries, "Fatal" → fatalities
+- Severity filter (switches the measure, not the rows; decision D30): "All" → serious_harm, "Severe injuries" → severe_injuries, "Deaths" → fatalities
 - Housing-type filter: "All" → units_all, "New Construction" → units_new_construction, "Preservation" → units_preservation

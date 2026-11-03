@@ -24,7 +24,8 @@ FILTER_OPTIONS = {
     "borough": ["All"] + BOROUGHS,
     "year": ["All", 2022, 2023, 2024, 2025, 2026],
     "housing_type": ["All", "New Construction", "Preservation"],
-    "severity": ["All", "Severe injury", "Fatal"],
+    # Severity switches the crash measure, not the rows (decision D30)
+    "severity": ["All", "Severe injuries", "Deaths"],
 }
 DEFAULT_FILTERS = {key: "All" for key in FILTER_OPTIONS}
 
@@ -46,11 +47,15 @@ def apply_filters(df, filters, use=("borough", "year", "housing_type")):
 
 
 def harm_column(filters):
-    """Crash measure picked by the severity filter."""
+    """Crash measure picked by the severity filter (decision D30).
+
+    The filter changes WHAT is counted (people harmed), not which crashes
+    are kept. Charts that count crashes should sum this column instead.
+    """
     return {
         "All": "serious_harm",
-        "Severe injury": "severe_injuries",
-        "Fatal": "fatalities",
+        "Severe injuries": "severe_injuries",
+        "Deaths": "fatalities",
     }[filters.get("severity", "All")]
 
 
