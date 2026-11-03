@@ -6,6 +6,7 @@ Contract (every chart function follows it):
   e.g. data["zip_year"], data["crashes"]
 - filters: dict with the keys in DEFAULT_FILTERS; "All" means "no filter"
 - A chart never reads files and never changes the tables it receives
+- A chart always returns a figure, even when the filters leave no data
 - Each owner edits only their own two functions
 """
 import plotly.graph_objects as go
@@ -51,6 +52,19 @@ def harm_column(filters):
         "Severe injury": "severe_injuries",
         "Fatal": "fatalities",
     }[filters.get("severity", "All")]
+
+
+def units_column(filters):
+    """Housing measure picked by the housing-type filter.
+
+    The ZIP and borough tables split units into columns instead of having a
+    construction_type column, so apply_filters can't filter them by type.
+    """
+    return {
+        "All": "units_all",
+        "New Construction": "units_new_construction",
+        "Preservation": "units_preservation",
+    }[filters.get("housing_type", "All")]
 
 
 def apply_style(fig, title):
