@@ -22,7 +22,7 @@ Last updated: 2026-11-04 (after integration, notebook sections 8–9)
 | --- | --- | --- | --- | --- |
 | R6 | Team of 4–6 | ✅ | 6 members | — |
 | R7 | 2 research questions per member (12 total), cross-domain | ✅ | Research Questions doc, Q1–Q12 | Each member |
-| R8 | 1 visualization per question (12 total) | 🟡 | 4 of 12 built (Q1, Q2, Q7, Q8), notebook 10.1, 10.2, 10.7, 10.8 | Each member |
+| R8 | 1 visualization per question (12 total) | ✅ | All 12 in `src/charts.py` and notebook 10.1–10.12, each with finding and limitations; all tested on 324 filter combinations | Each member |
 | R9 | Each member's contributions clearly documented | 🟡 | `docs/contributions_log.md` up to date; notebook Contributions table and README still empty | Mohamed Nazmy (notebook table), Mostafa Ayman (README) |
 
 ## Notebook
@@ -39,12 +39,12 @@ Last updated: 2026-11-04 (after integration, notebook sections 8–9)
 | R17 | Integration documented: join key, granularity and aggregation justified | ✅ | Section 8 (keys, ZIP fill tested, levels, distance join), D49–D52 | Moustafa Maged |
 | R18 | Post-integration cleaning: join NaNs, redundant columns, dtype mismatches | ✅ | Section 9.1–9.3 (NaNs → 0, 17 checks, type fixes), D53 | Moustafa Maged |
 | R19 | Visualizations that validate cleaning steps | ✅ | 6.6 and 7.6: missing-cells charts (raw vs clean) and usable-rows charts | Mostafa Alaa, Ali Issa |
-| R20 | Descriptive markdown: justify decisions, alternatives, how insights were reached | 🟡 | Sections 2, 4, 5, 6, 7 done; rest empty | Each owner; Mohamed Nazmy (consistency) |
+| R20 | Descriptive markdown: justify decisions, alternatives, how insights were reached | 🟡 | Sections 2, 4–10 done (each question: why, reading, check, finding, limitations); sections 1 and 11 empty | Each owner; Mostafa Ayman (1, 11) |
 | R21 | Prompt log of every AI prompt used | 🟡 | Notebook 12.3: rows 1–11 in task order (one row per task), all members so far (Mohamed's from his own log, task-related prompts only). New rows needed for integration, charts, website, story | Mohamed Nazmy, each member |
 | R22 | Dataset links in notebook | ✅ | Sections 2 and 12.1 | Mohamed Nazmy |
-| R23 | Clean code: descriptive names, modular functions | 🟡 | `src/charts.py` structure; EDA cells use descriptive names | Everyone |
+| R23 | Clean code: descriptive names, modular functions | 🟡 | `charts.py`: one data function + one chart function per question, shared helpers; final read-through pending | Everyone |
 | R24 | Comments on complex logic (outliers, joins) | 🟡 | EDA, cleaning and integration cells commented (outlier rules, ZIP fill, BallTree joins); chart code not written yet | Everyone |
-| R25 | Notebook runs top to bottom | 🟡 | Runs with no errors through section 9 (Python 3.12, 4 Nov; 64 code cells); section 10 (charts) still empty | Mohamed Nazmy |
+| R25 | Notebook runs top to bottom | 🟡 | Runs with no errors through section 10 (Python 3.12, 5 Nov; 88 code cells); sections 1 and 11 still empty | Mohamed Nazmy |
 
 ## Website
 
@@ -53,7 +53,7 @@ Last updated: 2026-11-04 (after integration, notebook sections 8–9)
 | R26 | Multiple dropdown filters | 🟡 | `FILTER_OPTIONS` in `src/charts.py` (borough, year, housing type, severity) | Baraa Tantawy |
 | R27 | Search mode that sets filters from typed text | 🟡 | Planned | Baraa Tantawy |
 | R28 | "Generate Report" button updates all charts | 🟡 | `CHARTS` registry ready; app not built. **Missing = deduction** | Baraa Tantawy |
-| R29 | Variety of interactive chart types (hover, zoom, filters) | 🟡 | 12 chart types planned | Each member |
+| R29 | Variety of interactive chart types (hover, zoom, filters) | ✅ | Scatter (Q1, Q7), line (Q2, Q4), heatmap (Q3, Q9), bar (Q5, Q6, Q10), stacked bar (Q11), map + bar (Q8), animated bubble (Q12); hover on all; zoom on all; filters per the Story table | Each member |
 | R30 | At least one chart showing both domains together | ✅ | Q1 scatter (housing units vs serious harm per ZIP) and Q8 map (crashes and buildings together) | Mohamed Nazmy, Baraa Tantawy |
 | R31 | Story section: question, key findings, limitations, benefit to NYC | 🟡 | Story doc drafted; findings and limits pending | Mostafa Ayman |
 | R32 | Real-time response, user-friendly, consistent layout | ❌ | — | Baraa Tantawy, Mostafa Ayman |

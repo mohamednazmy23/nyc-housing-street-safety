@@ -298,28 +298,281 @@ def q2_after_opening(data, filters):
     return fig
 
 
+WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+WINDOW_END = "2026-06-30"
+
+
+def note_below(fig, text, y=-0.2):
+    """Grey note under a chart (filters that don't apply, definitions, 'correlation is not causation')."""
+    fig.add_annotation(text=text, xref="paper", yref="paper", x=0, y=y, xanchor="left", showarrow=False,
+                       font=dict(size=11, color="grey"))
+    fig.update_layout(margin=dict(b=110))
+    return fig
+
+
+def no_data(name, message):
+    """The empty figure a chart returns when the filters leave nothing to show (contract rule)."""
+    fig = placeholder(name)
+    fig.layout.annotations[0].text = message
+    return fig
+
+
+def equal_groups(values, labels):
+    """Split a Series into len(labels) equal-sized, ordered groups by value. Assigned by rank position
+    (ties broken by index order), so the result never depends on how a pandas version places qcut's edges."""
+    position = values.rank(method="first").astype(int).to_numpy() - 1          # 0 .. n-1
+    codes = position * len(labels) // len(values)
+    return pd.Series(pd.Categorical.from_codes(codes, categories=labels, ordered=True), index=values.index)
+
+
+def zip_housing_groups(data, filters, n_groups, labels, use=("borough", "year")):
+    """Split ZIPs into equal-sized groups by affordable units completed (the housing-type filter picks
+    the units column). Many ZIPs have 0 units, so ties are broken by ZIP order to keep the groups equal."""
+    units = units_column(filters)
+    per_zip = apply_filters(data["zip_year"], filters, use=use).groupby("zip")[units].sum()
+    if len(per_zip) < n_groups:
+        return pd.Series(dtype="category"), per_zip
+    return equal_groups(per_zip, labels[:n_groups]), per_zip
+
+
+def q3_hour_shares(data, filters):
+    """Q3 data: for the top quarter of ZIPs by affordable units ("high-housing") and for all other ZIPs,
+    the share of each group's serious harm that falls in each weekday x hour cell (crashes with a known hour)."""
+    groups, _ = zip_housing_groups(data, filters, 4, ["Q1", "Q2", "Q3", "Q4"])
+    crashes = apply_filters(data["crashes"], filters, use=("borough", "year"))
+    crashes = crashes[crashes["hour"].notna() & crashes["zip"].isin(groups.index)]
+    harm = harm_column(filters)
+    crashes = crashes.assign(high=crashes["zip"].map(groups == "Q4").astype(bool),
+                             weight=crashes[harm].astype(float), hour=crashes["hour"].astype(int))
+    shares, totals = {}, {}
+    for high, part in crashes.groupby("high"):
+        cells = part.pivot_table(index="weekday", columns="hour", values="weight", aggfunc="sum", fill_value=0)
+        cells = cells.reindex(index=WEEKDAYS, columns=range(24), fill_value=0)
+        totals[high] = part["weight"].sum()
+        shares[high] = cells / max(totals[high], 1) * 100
+    return shares, totals, harm
+
+
+def q3_night_share(shares, high):
+    """Share of a group's harm between 22:00 and 05:59."""
+    return float(shares[high][[22, 23, 0, 1, 2, 3, 4, 5]].to_numpy().sum())
+
+
 def q3_when_crashes_happen(data, filters):
     """Q3 · Ali Issa · hour x weekday heatmap.
     Tables: crashes, zip_year. Filters: borough, year, housing_type, severity."""
-    return placeholder("Q3 When crashes happen")
+    shares, totals, harm = q3_hour_shares(data, filters)
+    if len(shares) < 2 or min(totals.values()) == 0:
+        return no_data("Q3 When crashes happen", "Not enough crashes with a known hour for these filters")
+    difference = shares[True] - shares[False]
+    limit = float(np.abs(difference.to_numpy()).max())
+    fig = go.Figure(go.Heatmap(
+        z=difference.to_numpy(), x=list(range(24)), y=WEEKDAYS, colorscale="RdBu_r", zmid=0, zmin=-limit, zmax=limit,
+        customdata=np.stack([shares[True].to_numpy(), shares[False].to_numpy()], axis=-1),
+        colorbar=dict(title="points"),
+        hovertemplate="%{y} %{x}:00<br>High-housing ZIPs: %{customdata[0]:.2f}%<br>Other ZIPs: %{customdata[1]:.2f}%"
+                      "<br>Difference: %{z:+.2f} points<extra></extra>"))
+    night_high, night_other = q3_night_share(shares, True), q3_night_share(shares, False)
+    more = "larger" if night_high > night_other else "smaller"
+    label = HARM_LABELS[harm].split(" (")[0]
+    title = (f"High-housing ZIPs have a {more} share of their {label} late at night "
+             f"(22:00–05:59: {night_high:.1f}% vs {night_other:.1f}% in other ZIPs)")
+    fig.update_xaxes(title="hour of the day", dtick=2)
+    fig.update_yaxes(autorange="reversed")
+    fig = apply_style(fig, title)
+    return note_below(fig, "Each cell: share of the group's harm in that hour, high-housing ZIPs (top quarter by affordable "
+                           "units) minus other ZIPs; red = more common in high-housing ZIPs. Crashes logged at 00:00 "
+                           "(time unknown) are left out.")
+
+
+def q4_repeat_shares(data, filters):
+    """Q4 data: share of serious harm at repeat-danger spots (lookback above 0) per year 2022-2025,
+    for ZIPs split into thirds by affordable units completed over the whole window."""
+    groups, _ = zip_housing_groups(data, filters, 3, ["Low", "Medium", "High"], use=("borough",))
+    crashes = apply_filters(data["crashes"], filters, use=("borough",))
+    crashes = crashes[crashes["zip"].isin(groups.index) & crashes["repeat_location"].notna()
+                      & crashes["year"].between(2022, 2025)]
+    weight = crashes[harm_column(filters)].astype(float)
+    crashes = crashes.assign(third=crashes["zip"].map(groups), weight=weight,
+                             repeat_weight=weight * crashes["repeat_location"].astype(float))
+    table = (crashes.groupby(["third", "year"], observed=True)
+                    .agg(weight=("weight", "sum"), repeat_weight=("repeat_weight", "sum"), crashes=("crash_id", "size"))
+                    .reset_index())
+    table["share"] = table["repeat_weight"] / table["weight"].where(table["weight"] > 0) * 100
+    return table
 
 
 def q4_left_unfixed(data, filters):
     """Q4 · Ali Issa · line by housing tercile.
     Tables: crashes, zip_year. Filters: borough, housing_type, severity."""
-    return placeholder("Q4 Repeat danger spots")
+    table = q4_repeat_shares(data, filters)
+    if table.empty or table["share"].isna().all():
+        return no_data("Q4 Repeat danger spots", "Not enough crashes with a lookback value for these filters")
+    fig = go.Figure()
+    for third, colour, width in [("Low", "#C7C7C7", 2), ("Medium", "#8C8C8C", 2), ("High", ACCENT, 3)]:
+        part = table[table["third"] == third]
+        fig.add_trace(go.Scatter(
+            x=part["year"], y=part["share"], mode="lines+markers", name=f"{third} affordable housing",
+            line=dict(color=colour, width=width), customdata=part["crashes"],
+            hovertemplate="%{x}: %{y:.1f}% at repeat-danger spots<br>%{customdata} crashes<extra>" + third + "</extra>"))
+    high = table[table["third"] == "High"].set_index("year")["share"]
+    others = table[table["third"] != "High"].groupby("year")[["repeat_weight", "weight"]].sum()
+    others_share = others["repeat_weight"] / others["weight"] * 100
+    always_higher = bool((high > others_share.reindex(high.index)).all())
+    first, last = high.index.min(), high.index.max()
+    trend = ("is not falling" if high[last] >= high[first] - 0.5 else "falls")
+    if always_higher:
+        title = (f"ZIPs with the most new affordable housing have the highest share of harm at known danger spots "
+                 f"every year, and it {trend} ({high[first]:.1f}% in {first}, {high[last]:.1f}% in {last})")
+    else:
+        title = (f"Share of harm at known danger spots, by affordable-housing third "
+                 f"(high: {high[first]:.1f}% in {first}, {high[last]:.1f}% in {last})")
+    fig.update_xaxes(title="year", dtick=1)
+    fig.update_yaxes(title="share of serious harm at repeat-danger spots (%)", rangemode="tozero")
+    fig = apply_style(fig, title)
+    return note_below(fig, "Repeat-danger spot = similar severe crashes at the same place in the 3 years before. "
+                           "Only crashes with a lookback value (missing for part of 2023–2024). ZIP thirds by affordable "
+                           "units completed Jan 2022 – Jun 2026. The year filter does not apply (the chart shows all years).")
+
+
+Q5_GROUPS = ["Fewest units", "Second", "Third", "Most units"]
+
+
+def rate_interval(deaths, crashes):
+    """Deaths per 100 crashes with an approximate 95% interval (deaths treated as a Poisson count)."""
+    rate = deaths / crashes * 100
+    half = 1.96 * np.sqrt(deaths) / crashes * 100
+    return rate, max(rate - half, 0), rate + half
+
+
+def q5_fatality_rates(data, filters):
+    """Q5 data: deaths per 100 serious crashes for ZIP quarters by affordable units, with all crashes
+    and without highway crashes (D12)."""
+    groups, _ = zip_housing_groups(data, filters, 4, Q5_GROUPS)
+    crashes = apply_filters(data["crashes"], filters, use=("borough", "year"))
+    crashes = crashes[crashes["zip"].isin(groups.index)].assign(quarter=lambda d: d["zip"].map(groups))
+    rows = []
+    for subset, part in [("All serious crashes", crashes), ("Without highway crashes", crashes[~crashes["is_highway"]])]:
+        for quarter, group in part.groupby("quarter", observed=True):
+            deaths, n = float(group["fatalities"].sum()), len(group)
+            if n:
+                rate, low, high = rate_interval(deaths, n)
+                rows.append({"subset": subset, "quarter": quarter, "deaths": deaths, "crashes": n,
+                             "rate": rate, "low": low, "high": high})
+    return pd.DataFrame(rows)
 
 
 def q5_how_deadly(data, filters):
     """Q5 · Mostafa Ayman · bar with confidence intervals.
     Tables: crashes, zip_year. Filters: borough, year, housing_type."""
-    return placeholder("Q5 How deadly crashes are")
+    table = q5_fatality_rates(data, filters)
+    if table.empty:
+        return no_data("Q5 How deadly crashes are", "No serious crashes for these filters")
+    fig = go.Figure()
+    for subset, colour in [("All serious crashes", GREY), ("Without highway crashes", ACCENT)]:
+        part = table[table["subset"] == subset]
+        fig.add_trace(go.Bar(
+            x=part["quarter"], y=part["rate"], name=subset, marker_color=colour,
+            error_y=dict(type="data", symmetric=False, array=part["high"] - part["rate"],
+                         arrayminus=part["rate"] - part["low"], color="black", thickness=1),
+            customdata=part[["deaths", "crashes", "low", "high"]],
+            hovertemplate="%{x}: %{y:.1f} deaths per 100 serious crashes<br>95% interval %{customdata[2]:.1f}–"
+                          "%{customdata[3]:.1f}<br>%{customdata[0]:.0f} deaths in %{customdata[1]:,} crashes"
+                          "<extra>" + subset + "</extra>"))
+    street = table[table["subset"] == "Without highway crashes"].set_index("quarter")
+    most = street.loc["Most units"] if "Most units" in street.index else None
+    if most is not None:
+        rest = street.drop(index="Most units")
+        rest_rate, rest_low, rest_high = rate_interval(rest["deaths"].sum(), max(rest["crashes"].sum(), 1))
+        # Compare with the other three quarters pooled; "more"/"less" only when the two 95% intervals don't overlap
+        overlap = rest_low <= most["high"] and rest_high >= most["low"]
+        word = "about as" if overlap else ("more" if most["rate"] > rest_rate else "less")
+        title = (f"On city streets, serious crashes are {word} deadly in the ZIPs with the most new affordable housing "
+                 f"({most['rate']:.1f} deaths per 100) as in the other ZIPs ({rest_rate:.1f})")
+        if word in ("more", "less"):
+            title = title.replace(" as in the other", " than in the other")
+    else:
+        title = "Deaths per 100 serious crashes, by affordable-housing quarter of ZIPs"
+    fig.update_layout(barmode="group", legend_title_text="")
+    fig.update_xaxes(title="ZIPs in four equal groups by affordable units completed (Jan 2022 – Jun 2026)")
+    fig.update_yaxes(title="deaths per 100 serious crashes", rangemode="tozero")
+    fig = apply_style(fig, title)
+    return note_below(fig, "Black lines: approximate 95% intervals (deaths as a Poisson count). Highway crashes are "
+                           "deadlier and mostly have no ZIP, so the street-only bars are the fair comparison (D12). "
+                           "The severity filter does not apply (the chart is about deaths).")
+
+
+Q6_MIN_UNITS, Q6_MAX_YEARS = 100, 3      # D11; and the 3-year cap on "under construction" (D63)
+
+
+def q6_construction_status(data, filters, max_years=Q6_MAX_YEARS):
+    """Q6 data: every ZIP-month flagged "under construction" when a New Construction building of 100+ total units
+    in that ZIP is between its project start and its completion. No completion date: active until the end of the
+    window, but never longer than 3 years after the start. Only ZIPs with both kinds of months are kept."""
+    buildings = data["buildings"]
+    sites = buildings[(buildings["construction_type"] == "New Construction") & buildings["zip"].notna()
+                      & (buildings["total_units"] >= Q6_MIN_UNITS)].drop_duplicates("building_id")
+    sites = apply_filters(sites, filters, use=("borough",))
+    end = sites["completion_date"].fillna(pd.Timestamp(WINDOW_END))
+    latest = sites["project_start"] + pd.DateOffset(years=max_years)
+    end = end.where(end <= latest, latest)
+    sites = sites.assign(start_month=sites["project_start"].dt.to_period("M").dt.to_timestamp(), end_date=end)
+
+    zip_month = apply_filters(data["zip_month"], filters, use=("borough", "year"))
+    pairs = zip_month[["zip", "month"]].merge(sites[["zip", "start_month", "end_date"]], on="zip")
+    pairs["active"] = (pairs["month"] >= pairs["start_month"]) & (pairs["month"] <= pairs["end_date"])
+    active = pairs.groupby(["zip", "month"])["active"].any()
+    months = zip_month.merge(active.rename("under_construction").reset_index(), on=["zip", "month"], how="left")
+    months["under_construction"] = months["under_construction"].astype("boolean").fillna(False).astype(bool)
+    both = months.groupby("zip")["under_construction"].transform(lambda s: s.any() and not s.all())
+    return months[both]
+
+
+def q6_summary(months):
+    """Average monthly serious harm per ZIP, under construction vs not: first per ZIP, then averaged over ZIPs
+    (so every ZIP counts once and is compared with itself), by borough and for all of NYC."""
+    per_zip = months.groupby(["borough", "zip", "under_construction"])["serious_harm"].mean().unstack().dropna()
+    months_count = months.groupby(["borough", "under_construction"]).size().unstack(fill_value=0)
+    rows = []
+    for borough, part in [("All NYC", per_zip)] + [(b, per_zip.loc[b]) for b in BOROUGHS if b in per_zip.index.get_level_values(0)]:
+        count = months_count.sum() if borough == "All NYC" else months_count.loc[borough]
+        for status in (False, True):
+            rows.append({"borough": borough, "under_construction": status, "harm": part[status].mean(),
+                         "zips": len(part), "zip_months": int(count.get(status, 0)),
+                         "share_zips_higher": float((part[True] > part[False]).mean())})
+    return pd.DataFrame(rows)
 
 
 def q6_during_construction(data, filters):
     """Q6 · Mostafa Ayman · grouped bar.
     Tables: buildings, zip_month. Filters: borough, year. New Construction only."""
-    return placeholder("Q6 Danger during construction")
+    months = q6_construction_status(data, filters)
+    if months.empty:
+        return no_data("Q6 Danger during construction", "No ZIPs with both construction and non-construction months")
+    summary = q6_summary(months)
+    fig = go.Figure()
+    for status, name, colour in [(False, "No large site under construction", GREY),
+                                 (True, "Large affordable building under construction", ACCENT)]:
+        part = summary[summary["under_construction"] == status]
+        fig.add_trace(go.Bar(
+            x=part["borough"], y=part["harm"], name=name, marker_color=colour,
+            customdata=part[["zips", "zip_months"]],
+            hovertemplate="%{x}: %{y:.2f} serious harm per ZIP per month<br>%{customdata[0]} ZIPs, "
+                          "%{customdata[1]:,} ZIP-months<extra>" + name + "</extra>"))
+    nyc = summary[summary["borough"] == "All NYC"].set_index("under_construction")
+    during, other = nyc.loc[True, "harm"], nyc.loc[False, "harm"]
+    if abs(during - other) < 0.1:
+        title = (f"Streets are no more dangerous while a large affordable building is going up "
+                 f"({during:.2f} vs {other:.2f} serious harm per ZIP per month)")
+    else:
+        title = (f"Serious harm is {'higher' if during > other else 'lower'} while a large affordable building is going up "
+                 f"({during:.2f} vs {other:.2f} per ZIP per month)")
+    fig.update_layout(barmode="group", legend_title_text="")
+    fig.update_yaxes(title="average serious harm per ZIP per month", rangemode="tozero")
+    fig = apply_style(fig, title)
+    return note_below(fig, f"New Construction buildings with {Q6_MIN_UNITS}+ total units, from project start to completion "
+                           f"(at most {Q6_MAX_YEARS} years). Each ZIP is compared with its own other months; only ZIPs with "
+                           "both kinds of months. The housing-type and severity filters do not apply.")
 
 
 # Q7 settings: change from the end of 2022 to the end of 2025 (full years only; 2026 is half a year)
@@ -435,10 +688,15 @@ def haversine_m(lat1, lon1, lat2, lon2):
 def q8_buildings(data, filters):
     """The affordable buildings the 250 m flags were computed from: located, completed by 30 Jun 2026,
     one row per building (its latest project), of the chosen housing type and borough."""
-    buildings = data["buildings"]
-    buildings = buildings[buildings["has_location"] & (buildings["completion_date"] <= Q8_WINDOW_END)]
+    return apply_filters(existing_buildings(data), filters, use=("borough", "housing_type"))
+
+
+def existing_buildings(data):
+    """Located affordable buildings completed by 30 Jun 2026, one row per building: the same set and the
+    same order of steps as notebook 8.3 (one row per building_id first, its latest project; then completed)."""
+    buildings = data["buildings"][data["buildings"]["has_location"]]
     buildings = buildings.sort_values("project_start").drop_duplicates("building_id", keep="last")
-    return apply_filters(buildings, filters, use=("borough", "housing_type"))
+    return buildings[buildings["completion_date"] <= Q8_WINDOW_END]
 
 
 def q8_corridors(data, filters):
@@ -532,28 +790,247 @@ def q8_dangerous_corridors(data, filters):
     return fig
 
 
+INCOME_TIERS = {"units_extremely_low": "Extremely low income", "units_very_low": "Very low income",
+                "units_low": "Low income", "units_moderate": "Moderate income", "units_middle": "Middle income",
+                "units_other_income": "Other income (e.g. super's unit)"}
+CRASH_METRICS = {"serious_harm": "Serious harm", "fatalities": "Deaths", "n_repeat_crashes": "Crashes at repeat-danger spots"}
+
+
+def q9_feature_table(data, filters):
+    """Q9 data: one row per ZIP with the make-up of the affordable units completed in the window
+    (shares by income tier, bedroom size, tenure, construction type, plus total units as a size reference)
+    and the ZIP's crash measures over the same period."""
+    buildings = data["buildings"]
+    done = buildings[buildings["completed_in_window"] & buildings["zip"].notna()]
+    done = apply_filters(done, filters, use=("borough", "housing_type"))
+    year = filters.get("year", "All")
+    if year != "All":
+        done = done[done["completion_year"] == year]
+    unit_cols = list(INCOME_TIERS) + ["units_studio", "units_1br", "units_2br", "units_3br", "units_4br",
+                                       "units_5br", "units_6br_plus", "units_rental", "units_homeownership"]
+    per_zip = done.groupby("zip")[unit_cols + ["all_counted_units"]].sum().astype(float)
+    per_zip["nc_units"] = done[done["construction_type"] == "New Construction"].groupby("zip")["all_counted_units"].sum()
+    per_zip = per_zip[per_zip["all_counted_units"] > 0].fillna(0)
+    total = per_zip["all_counted_units"]
+
+    features = pd.DataFrame(index=per_zip.index)
+    for col, label in INCOME_TIERS.items():
+        features[label] = per_zip[col] / total
+    features["Studios"] = per_zip["units_studio"] / total
+    features["1 bedroom"] = per_zip["units_1br"] / total
+    features["2 bedrooms"] = per_zip["units_2br"] / total
+    features["3+ bedrooms"] = per_zip[["units_3br", "units_4br", "units_5br", "units_6br_plus"]].sum(axis=1) / total
+    tenure = per_zip["units_rental"] + per_zip["units_homeownership"]
+    features["Rental (vs homeownership)"] = per_zip["units_rental"] / tenure.where(tenure > 0)
+    if filters.get("housing_type", "All") == "All":     # with one type chosen, this share is always 0 or 1
+        features["New Construction (vs Preservation)"] = per_zip["nc_units"] / total
+    features["Total affordable units (size, for reference)"] = total
+
+    crashes = apply_filters(data["zip_year"], filters, use=("borough", "year")).groupby("zip")[list(CRASH_METRICS)].sum()
+    return features.join(crashes, how="inner")
+
+
+def q9_correlations(table):
+    """Spearman correlation of every housing feature with every crash measure, and the number of ZIPs used."""
+    features = [col for col in table.columns if col not in CRASH_METRICS]
+    rho = pd.DataFrame({CRASH_METRICS[m]: [spearman(table[f], table[m]) for f in features] for m in CRASH_METRICS},
+                       index=features)
+    n = pd.Series({f: int(table[f].notna().sum()) for f in features})
+    return rho, n
+
+
 def q9_housing_features(data, filters):
     """Q9 · Mostafa Alaa · correlation heatmap.
     Tables: buildings, zip_year. Filters: borough, year, housing_type."""
-    return placeholder("Q9 Housing features vs crashes")
+    table = q9_feature_table(data, filters)
+    if len(table) < 10:
+        return no_data("Q9 Housing features vs crashes", "Fewer than 10 ZIPs with completed units for these filters")
+    rho, n = q9_correlations(table)
+    values = rho.to_numpy(dtype=float)
+    fig = go.Figure(go.Heatmap(
+        z=values, x=list(rho.columns), y=list(rho.index), colorscale="RdBu_r", zmid=0, zmin=-1, zmax=1,
+        text=np.round(values, 2), texttemplate="%{text}", colorbar=dict(title="Spearman ρ"),
+        customdata=np.repeat(n.to_numpy()[:, None], len(rho.columns), axis=1),
+        hovertemplate="%{y} vs %{x}<br>ρ = %{z:.2f} over %{customdata} ZIPs<extra></extra>"))
+    size_row = "Total affordable units (size, for reference)"
+    mix = rho.drop(index=size_row)["Serious harm"]
+    strongest = mix.abs().max()
+    title = (f"How much housing a ZIP gets tracks its serious harm (ρ = {rho.loc[size_row, 'Serious harm']:.2f}); "
+             f"what kind of housing it gets barely does (every share |ρ| ≤ {strongest:.2f})")
+    fig.update_yaxes(autorange="reversed")
+    fig = apply_style(fig, title)
+    fig.update_layout(height=620, margin=dict(l=280))
+    return note_below(fig, f"{len(table)} ZIPs with affordable units completed Jan 2022 – Jun 2026. Rows: share of a ZIP's "
+                           "affordable units (last row: total units). Correlation is not causation.", y=-0.12)
+
+
+DANGER_GROUPS = ["Safest fifth", "Second", "Third", "Fourth", "Most dangerous fifth"]
+Q10_START_YEARS = [2023, 2024, 2025]
+
+
+def q10_projects_by_danger(data, filters):
+    """Q10 data: ZIPs ranked by their serious harm in 2022 and split into five equal groups; then the affordable
+    projects started 2023-2025 (or in the chosen year) counted by the group of their building's ZIP.
+    A project with buildings in two ZIPs counts once in each."""
+    zip_year = apply_filters(data["zip_year"], filters, use=("borough",))
+    harm_2022 = zip_year[zip_year["year"] == 2022].groupby("zip")["serious_harm"].sum()
+    if len(harm_2022) < 5:
+        return pd.DataFrame(), None
+    groups = equal_groups(harm_2022, DANGER_GROUPS)
+    year = filters.get("year", "All")
+    years = [year] if year in Q10_START_YEARS else Q10_START_YEARS
+    buildings = apply_filters(data["buildings"], filters, use=("borough", "housing_type"))
+    started = buildings[buildings["zip"].isin(groups.index) & buildings["project_start"].dt.year.isin(years)]
+    started = started.assign(group=started["zip"].map(groups))
+    projects = started.drop_duplicates(["project_id", "zip"])
+    table = pd.DataFrame({
+        "projects": projects.groupby("group", observed=False).size(),
+        "units": started.groupby("group", observed=False)["all_counted_units"].sum().astype(float),
+        "harm_2022_min": harm_2022.groupby(groups, observed=False).min(),
+        "harm_2022_max": harm_2022.groupby(groups, observed=False).max(),
+        "zips": groups.value_counts().reindex(DANGER_GROUPS)}).reindex(DANGER_GROUPS)
+    table["project_share"] = table["projects"] / max(table["projects"].sum(), 1) * 100
+    table["unit_share"] = table["units"] / max(table["units"].sum(), 1) * 100
+    return table, years
 
 
 def q10_danger_before(data, filters):
     """Q10 · Mostafa Alaa · bar by 2022 danger quintile.
     Tables: buildings, zip_year. Filters: borough, year, housing_type."""
-    return placeholder("Q10 Was the danger already there")
+    table, years = q10_projects_by_danger(data, filters)
+    if table.empty or table["projects"].sum() == 0:
+        return no_data("Q10 Was the danger already there", "No affordable projects started for these filters")
+    colours = [ACCENT if group == DANGER_GROUPS[-1] else GREY for group in DANGER_GROUPS]
+    fig = go.Figure(go.Bar(
+        x=DANGER_GROUPS, y=table["project_share"], marker_color=colours, text=table["project_share"].round(0),
+        texttemplate="%{text:.0f}%", textposition="outside",
+        customdata=table[["projects", "units", "unit_share", "harm_2022_min", "harm_2022_max", "zips"]],
+        hovertemplate="%{x} (%{customdata[5]} ZIPs, 2022 serious harm %{customdata[3]:.0f}–%{customdata[4]:.0f})<br>"
+                      "%{customdata[0]} new projects (%{y:.1f}%)<br>%{customdata[1]:,.0f} affordable units "
+                      "(%{customdata[2]:.1f}%)<extra></extra>"))
+    fig.add_hline(y=20, line=dict(color="black", dash="dash"),
+                  annotation_text="20% = an even spread", annotation_position="top left")
+    when = f"{years[0]}–{years[-1]}" if len(years) > 1 else str(years[0])
+    title = (f"{table.loc[DANGER_GROUPS[-1], 'project_share']:.0f}% of the affordable projects started in {when} went to "
+             f"the fifth of ZIPs that were most dangerous in 2022")
+    fig.update_xaxes(title="ZIPs in five equal groups by serious harm in 2022")
+    fig.update_yaxes(title="share of new affordable projects (%)", rangemode="tozero")
+    fig = apply_style(fig, title)
+    return note_below(fig, "Projects by start date (Project Start Date); confidential projects have no ZIP and are not "
+                           "included. The year filter picks one start year (2023–2025); other years show all three. "
+                           "Correlation is not causation.")
+
+
+def q11_building_bands(data, filters, radius_column="crashes_100m"):
+    """Q11 data: affordable buildings completed by 30 Jun 2026 (one row per building, as in 8.3) with the number of
+    non-highway serious crashes within 100 m, grouped as 0 / 1 / 2+ per borough."""
+    buildings = apply_filters(existing_buildings(data), filters, use=("borough", "housing_type"))
+    year = filters.get("year", "All")
+    if year != "All":
+        buildings = buildings[buildings["completion_year"] == year]
+    table = buildings.merge(data["building_crash_counts"], on="building_id")
+    table["band"] = pd.cut(table[radius_column], [-1, 0, 1, np.inf], labels=["0", "1", "2+"])
+    counts = pd.crosstab(table["borough"], table["band"]).reindex(columns=["0", "1", "2+"], fill_value=0)
+    shares = counts.div(counts.sum(axis=1), axis=0) * 100
+    order = (shares["1"] + shares["2+"]).sort_values(ascending=False).index
+    return counts.loc[order], shares.loc[order], table
 
 
 def q11_doorstep_danger(data, filters):
     """Q11 · Moustafa Maged · stacked bar by borough.
     Tables: buildings, building_crash_counts. Filters: borough, year, housing_type, severity."""
-    return placeholder("Q11 Doorstep danger")
+    counts, shares, table = q11_building_bands(data, filters)
+    if table.empty:
+        return no_data("Q11 Doorstep danger", "No completed affordable buildings for these filters")
+    fig = go.Figure()
+    for band, name, colour in [("0", "No serious crash", "#E3E3E3"), ("1", "1 serious crash", GREY),
+                               ("2+", "2 or more", ACCENT)]:
+        fig.add_trace(go.Bar(
+            x=shares.index, y=shares[band], name=name, marker_color=colour, customdata=counts[band],
+            hovertemplate="%{x}: %{y:.1f}% of buildings (%{customdata:,})<extra>" + name + "</extra>"))
+    any_crash = shares["1"] + shares["2+"]
+    overall = (table["crashes_100m"] > 0).mean() * 100
+    if len(any_crash) > 1:
+        title = (f"{overall:.0f}% of affordable buildings had a serious crash within 100 m (about a block): "
+                 f"{any_crash.iloc[0]:.0f}% in {any_crash.index[0]}, {any_crash.iloc[-1]:.0f}% in {any_crash.index[-1]}")
+    else:
+        title = f"{overall:.0f}% of affordable buildings in {any_crash.index[0]} had a serious crash within 100 m (about a block)"
+    fig.update_layout(barmode="stack", legend_title_text="Within 100 m, Jan 2022 – Jun 2026")
+    fig.update_yaxes(title="share of affordable buildings (%)", range=[0, 100])
+    fig = apply_style(fig, title)
+    return note_below(fig, "Buildings completed by Jun 2026, one per building; street crashes only (no highways). Crashes "
+                           "over the whole window, also before a building was finished. The year filter picks buildings "
+                           "completed in that year; the severity filter does not apply (crashes are counted).")
+
+
+Q12_YEARS = [2022, 2023, 2024, 2025]       # full years only (2026 is Jan-Jun)
+
+
+def q12_borough_years(data, filters):
+    """Q12 data: per borough and full year, affordable units completed, serious harm and cumulative units."""
+    units, harm = units_column(filters), harm_column(filters)
+    table = data["borough_year"]
+    table = table[table["year"].isin(Q12_YEARS)].sort_values(["borough", "year"]).copy()
+    table["units"], table["harm"] = table[units].astype(float), table[harm].astype(float)
+    table["cumulative_units"] = table.groupby("borough")["units"].cumsum()
+    return table, units, harm
 
 
 def q12_borough_balance(data, filters):
     """Q12 · Moustafa Maged · animated bubble.
     Tables: borough_year. Filters: severity (always shows all boroughs and years)."""
-    return placeholder("Q12 Borough balance over time")
+    table, units, harm = q12_borough_years(data, filters)
+    if table.empty:
+        return no_data("Q12 Borough balance over time", "No data")
+    colours = dict(zip(BOROUGHS, ["#4C6A92", "#D1495B", "#E09F3E", "#2E8B57", "#7F7F7F"]))
+    sizeref = 2 * table["cumulative_units"].max() / 60 ** 2
+
+    def bubbles(year):
+        part = table[table["year"] == year]
+        return [go.Scatter(
+            x=[row["units"]], y=[row["harm"]], mode="markers+text", name=row["borough"], text=[row["borough"]],
+            textposition="top center", showlegend=False,
+            marker=dict(size=[max(row["cumulative_units"], 1)], sizemode="area", sizeref=sizeref, sizemin=6,
+                        color=colours[row["borough"]], opacity=0.85, line=dict(width=1, color="white")),
+            customdata=[[row["cumulative_units"], year]],
+            hovertemplate=row["borough"] + " %{customdata[1]}<br>Units completed: %{x:,.0f}<br>"
+                          + HARM_LABELS[harm].split(" (")[0].capitalize() + ": %{y:,.0f}<br>Units since Jan 2022: "
+                          "%{customdata[0]:,.0f}<extra></extra>") for _, row in part.iterrows()]
+
+    trails = [go.Scatter(x=part["units"], y=part["harm"], mode="lines", hoverinfo="skip", showlegend=False,
+                         line=dict(color=colours[b], width=1, dash="dot"), opacity=0.4)
+              for b, part in table.groupby("borough")]
+    first, last = Q12_YEARS[0], Q12_YEARS[-1]
+    fig = go.Figure(data=trails + bubbles(first),
+                    frames=[go.Frame(data=bubbles(year), traces=list(range(len(trails), len(trails) + 5)), name=str(year))
+                            for year in Q12_YEARS])
+    wide = table.pivot(index="borough", columns="year", values=["units", "harm"])
+    better = [b for b in wide.index if wide.loc[b, ("units", last)] > wide.loc[b, ("units", first)]
+              and wide.loc[b, ("harm", last)] < wide.loc[b, ("harm", first)]]
+    label = HARM_LABELS[harm].split(" (")[0]
+    if better:
+        title = (f"Only {', '.join(better)} moved to more new homes and less {label} from {first} to {last}; "
+                 "in the other boroughs both moved together or housing fell")
+    else:
+        title = (f"No borough moved to more affordable homes and less {label} from {first} to {last}: "
+                 "housing output swings from year to year, harm barely moves")
+    fig.update_layout(
+        updatemenus=[dict(type="buttons", x=0, y=-0.12, xanchor="left", showactive=False,
+                          buttons=[dict(label="▶ Play", method="animate",
+                                        args=[None, dict(frame=dict(duration=900, redraw=True), fromcurrent=True,
+                                                         transition=dict(duration=400))]),
+                                   dict(label="❚❚ Pause", method="animate",
+                                        args=[[None], dict(frame=dict(duration=0, redraw=False), mode="immediate")])])],
+        sliders=[dict(active=0, x=0.15, y=-0.08, len=0.85, currentvalue=dict(prefix="Year: "),
+                      steps=[dict(label=str(year), method="animate",
+                                  args=[[str(year)], dict(mode="immediate", frame=dict(duration=400, redraw=True))])
+                             for year in Q12_YEARS])])
+    fig.update_xaxes(title=f"{UNIT_LABELS[units]} in the year", range=[0, table["units"].max() * 1.15])
+    fig.update_yaxes(title=f"{HARM_LABELS[harm]} in the year", range=[0, table["harm"].max() * 1.15])
+    fig = apply_style(fig, title)
+    return note_below(fig, "Bubble size = affordable units completed since Jan 2022; dotted lines = each borough's path "
+                           f"{first}–{last}. Full years only; all boroughs always shown (the borough and year filters do "
+                           "not apply). Includes records without a ZIP.", y=-0.3)
 
 
 # The website's Generate Report button loops over this registry
