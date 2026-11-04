@@ -135,8 +135,17 @@ See notebook section 4 and its 4.x summary table (13 issues). Not repeated here.
 | ZIP fill | 4,091 candidates; 3,817 filled (median 84 m); 274 too far (102 highway); 11,889 of 13,309 crashes with a ZIP; by year 87.7% · 88.0% · 86.0% · 94.2% · 92.7% |
 | Border ZIPs | 6 ZIPs in two boroughs; 14 crashes differ from their ZIP's borough |
 | Tables | zip_year 950 rows; zip_month 10,260; borough_year 25; building_crash_counts 7,470 |
-| Distance join | 9,854 street crashes; buildings with a serious crash within 100 m: 51.2% of the 5,873 completed by June 2026 (50.4% of all 7,470); within 250 m: 95.2% (94.7%); 5,707 street crashes within 250 m of a completed building; `near_building_250m` unknown for 2,441 crashes without coordinates |
+| Distance join | 9,854 street crashes; buildings with a serious crash within 100 m: 51.2% of the 5,873 completed by June 2026 (50.4% of all 7,470); within 250 m: 95.2% (94.7%); 5,705 street crashes within 250 m of a completed building (exact distance; 'near any' = 'near either type'); `near_building_250m` unknown for 2,441 crashes without coordinates |
 | Join NaNs | zip_year: 469 cells without units, 72 without crashes → 0; none left |
 | ZIP-table coverage | 98.9% of units completed in the window (114,249 of 115,547); 88.8% of serious harm (12,930 of 14,564) |
 | Consistency | 17 of 17 checks True; no `_x`/`_y` columns |
 | Export | 6 CSVs, about 4.7 MB; all identical after reload with `src/data_loader.py` |
+
+### Research questions: Q1, Q2 (Mohamed Nazmy, 4 Nov) and Q7, Q8 (Baraa Tantawy, 5 Nov)
+
+| Question | Key numbers (from code output) |
+| --- | --- |
+| Q1 housing vs danger by ZIP | 190 ZIPs; top quarter (48) got 87.7% of 57,877 New Construction units and had 41.2% of 12,930 serious harm; Spearman ρ 0.67 (0.48 among the 127 ZIPs with units; 0.64 all types; 0.53 deaths); by borough 0.25–0.66 |
+| Q2 before/after completion | 925 buildings in 107 ZIPs; change per ZIP-month: small +0.07, medium +0.02, large −0.03; baseline (52 ZIPs) +0.07 |
+| Q7 growth vs change | 87 ZIPs pass baselines; growth median 55% (0–327%); harm change median +7% (−78% to +183%); ρ −0.02 (crash counts −0.05; other baselines −0.06 to 0.06); quadrants 23 / 20 / 20 / 24; ZIP coverage 87.7% → 94.2% makes ZIP-table harm rise 12.0% vs 4.4% in all crashes |
+| Q8 corridors near housing | 5,698 street crashes within 250 m with a street name (58%; 7 of 5,705 have none), 6,059 serious harm, 1,448 corridors; top 10 hold 9.6% (top 10% hold 48.7%); top: Atlantic Ave 71, Eastern Pkwy 67, Jerome Ave 65, Grand Concourse 60; 7 of 10 also in the city-wide top 10; repeat share 11.9% (top 10) vs 7.6%; NC-only top 10 10.7%, Preservation-only 12.5% |

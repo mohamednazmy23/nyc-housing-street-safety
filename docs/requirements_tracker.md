@@ -22,7 +22,7 @@ Last updated: 2026-11-04 (after integration, notebook sections 8–9)
 | --- | --- | --- | --- | --- |
 | R6 | Team of 4–6 | ✅ | 6 members | — |
 | R7 | 2 research questions per member (12 total), cross-domain | ✅ | Research Questions doc, Q1–Q12 | Each member |
-| R8 | 1 visualization per question (12 total) | 🟡 | Stubs in `src/charts.py`; no chart built yet | Each member |
+| R8 | 1 visualization per question (12 total) | 🟡 | 4 of 12 built (Q1, Q2, Q7, Q8), notebook 10.1, 10.2, 10.7, 10.8 | Each member |
 | R9 | Each member's contributions clearly documented | 🟡 | `docs/contributions_log.md` up to date; notebook Contributions table and README still empty | Mohamed Nazmy (notebook table), Mostafa Ayman (README) |
 
 ## Notebook
@@ -54,7 +54,7 @@ Last updated: 2026-11-04 (after integration, notebook sections 8–9)
 | R27 | Search mode that sets filters from typed text | 🟡 | Planned | Baraa Tantawy |
 | R28 | "Generate Report" button updates all charts | 🟡 | `CHARTS` registry ready; app not built. **Missing = deduction** | Baraa Tantawy |
 | R29 | Variety of interactive chart types (hover, zoom, filters) | 🟡 | 12 chart types planned | Each member |
-| R30 | At least one chart showing both domains together | 🟡 | Q1 scatter planned (Q8 map as second) | Mohamed Nazmy |
+| R30 | At least one chart showing both domains together | ✅ | Q1 scatter (housing units vs serious harm per ZIP) and Q8 map (crashes and buildings together) | Mohamed Nazmy, Baraa Tantawy |
 | R31 | Story section: question, key findings, limitations, benefit to NYC | 🟡 | Story doc drafted; findings and limits pending | Mostafa Ayman |
 | R32 | Real-time response, user-friendly, consistent layout | ❌ | — | Baraa Tantawy, Mostafa Ayman |
 | R33 | Deployed on a free platform and fully tested | ❌ | Vercel (D28); website-only `requirements.txt` ready (D32) | Baraa Tantawy |
@@ -66,5 +66,5 @@ Last updated: 2026-11-04 (after integration, notebook sections 8–9)
 | R34 | All code, notebook and website files in a GitHub repo | 🟡 | Structure, notebook, `charts.py`, logs, processed data (`data/processed/`) and loader pushed; app missing | Whole team |
 | R35 | README: setup, deployment, each member's contribution | ❌ | — | Mostafa Ayman |
 | R36 | Story quality: clear question, honest limits, no unsupported causal claims | 🟡 | Story doc framework | Mostafa Ayman, everyone |
-| R37 | One email to ICS503Data@gmail.com: member IDs, repo link, deploy link, dataset links | ❌ | Member IDs still TO CONFIRM | Baraa Tantawy |
+| R37 | One email to ICS503Data@gmail.com: member IDs, repo link, deploy link, dataset links | ❌ | Member IDs collected (notebook Team table); deploy link missing | Baraa Tantawy |
 | R38 | Everything in the repo before 9 Nov 2026 | ❌ | — | Whole team |
