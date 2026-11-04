@@ -11,7 +11,7 @@ Last updated: 2026-11-04
 | --- | --- | --- |
 | Housing overview + EDA | ✅ (Mohamed Nazmy, 3 Nov) | 4 (summary table 4.x) |
 | SIRTA overview + EDA | ✅ (Ali Issa, 4 Nov) | 5 (summary table 5.x) |
-| Housing cleaning | ❌ | 6 |
+| Housing cleaning | ✅ (Mostafa Alaa, 4 Nov) | 6 (summary table 6.x) |
 | SIRTA cleaning | ❌ | 7 |
 | Integration | ❌ | 8 |
 | Post-integration cleaning + export | ❌ | 9 |
@@ -66,3 +66,37 @@ See notebook section 4 and its 4.x summary table (13 issues). Not repeated here.
 - Filling missing lookback with 0 → rejected: 0 means "not a repeat location", which we don't know.
 
 **Main consequence:** without filling ZIPs from coordinates, 2022 would have ZIPs for only 16.3% of crashes, which would break Q7 and Q10 (both use 2022 as the baseline).
+
+### Housing pre-integration cleaning (Mostafa Alaa, 4 Nov 2026)
+
+**What and how:** works on a copy of `df_housing`; result `housing_clean` (9,551 rows × 37 columns, data-dictionary names). Decisions D34–D41; full table in notebook 6.x.
+
+**Checks that settled the open questions from the handoff (section 19, item 18):**
+
+| Question | Answer from code |
+| --- | --- |
+| Do empty bedroom and tenure cells mean 0, like income tiers? | Yes: all three groups add up to All Counted Units in 9,522 of 9,522 rows with a total; no cell is ever written as 0 |
+| The 9 non-confidential rows without location? | 8 New Construction, not completed; 1 single-unit preservation home (2019) |
+| Missing Building ID = confidential rows? | Yes, exactly the 1,949 confidential rows |
+| 2026 completions after 30 Jun? | 16 buildings |
+
+**Other numbers from code output:**
+
+| Check | Result |
+| --- | --- |
+| `----` placeholders | 1,949 rows (3,898 cells), exactly the confidential rows → missing |
+| Empty breakdown cells filled with 0 | 106,280 |
+| Missing All Counted Units | 29; breakdowns all 0; 18 completed, 1 in the window; 2,525 Total Units |
+| Missing completion date | 1,666; 1,653 also no project completion; start years 2023–2026: 1,341 |
+| IQR fence / above | 72 units / 1,249 buildings; 0 domain-rule breaks |
+| Size groups (Total Units) | 7,309 small · 1,698 medium · 544 large |
+| Completed before start | 20 (1 in the window); 0 completed after project completion; 166 complete while project isn't |
+| Buildings in several projects | 123 buildings, 247 rows (107 Preservation twice, 13 New Construction twice); 2 completed twice in the window |
+| Placeholder BINs | 482 (3000000: 177, 2000000: 153, 4000000: 90, 1000000: 43, 5000000: 19) |
+| Coordinate pairs | median 21 m apart (north–south), max 1,129 m; Latitude only: 86 rows |
+| Duplicates | 0 full, 0 project + building, 0 confidential look-alikes |
+| Before → after | rows 9,551 → 9,551; columns 41 → 37; affordable units 320,946 → 320,946 |
+| Usable buildings | 9,551 borough · 7,593 with ZIP · 2,599 completed in window · 1,670 New Construction |
+| Units completed 1 Jan 2022 – 30 Jun 2026 | 115,547 (114,249 in buildings with a ZIP) — confirms the Story hook's "about 115,500" |
+
+**Alternatives considered:** see the "Alternatives rejected" lines in each 6.x markdown cell and D34–D41.
