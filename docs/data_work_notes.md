@@ -148,4 +148,17 @@ See notebook section 4 and its 4.x summary table (13 issues). Not repeated here.
 | Q1 housing vs danger by ZIP | 190 ZIPs; top quarter (48) got 87.7% of 57,877 New Construction units and had 41.2% of 12,930 serious harm; Spearman ρ 0.67 (0.48 among the 127 ZIPs with units; 0.64 all types; 0.53 deaths); by borough 0.25–0.66 |
 | Q2 before/after completion | 925 buildings in 107 ZIPs; change per ZIP-month: small +0.07, medium +0.02, large −0.03; baseline (52 ZIPs) +0.07 |
 | Q7 growth vs change | 87 ZIPs pass baselines; growth median 55% (0–327%); harm change median +7% (−78% to +183%); ρ −0.02 (crash counts −0.05; other baselines −0.06 to 0.06); quadrants 23 / 20 / 20 / 24; ZIP coverage 87.7% → 94.2% makes ZIP-table harm rise 12.0% vs 4.4% in all crashes |
-| Q8 corridors near housing | 5,698 street crashes within 250 m with a street name (58%; 7 of 5,705 have none), 6,059 serious harm, 1,448 corridors; top 10 hold 9.6% (top 10% hold 48.7%); top: Atlantic Ave 71, Eastern Pkwy 67, Jerome Ave 65, Grand Concourse 60; 7 of 10 also in the city-wide top 10; repeat share 11.9% (top 10) vs 7.6%; NC-only top 10 10.7%, Preservation-only 12.5% |
+| Q8 corridors near housing | 5,698 street crashes within 250 m with a street name (58%; 7 of 5,705 have none), 6,059 serious harm, 1,448 corridors; top 10 hold 9.6% (top 10% hold 48.7%); top: Atlantic Ave 71, Eastern Pkwy 67, Jerome Ave 65, Grand Concourse 60 (units within 250 m: Grand Concourse 9,415, Jerome 9,325, Atlantic 8,801, building set as 8.3); 7 of 10 also in the city-wide top 10; repeat share 11.9% (top 10) vs 7.6%; NC-only top 10 10.7%, Preservation-only 12.5% |
+
+### Research questions: Q3–Q6, Q9–Q12 (5 Nov)
+
+| Question | Key numbers (from code output) |
+| --- | --- |
+| Q3 timing (Ali Issa) | Night 22:00–05:59: 25.3% of harm in high-housing ZIPs vs 22.6% (+2.7; random ZIP sets reach it in 4.3% of 2,000 draws); weekend 29.9 vs 27.8; morning rush 9.7 vs 10.8; evening 35.6 vs 35.6 |
+| Q4 repeat spots (Ali Issa) | High third 8.4% (2022) → 10.2 → 7.3 → 8.8% (2025); four years 8.7% vs 6.2% low, 5.3% medium |
+| Q5 deadliness (Mostafa Ayman) | Street crashes, deaths per 100: 5.54 / 7.95 / 5.52 / 5.67 (fewest → most units); most-units 5.7 vs others pooled 6.4 (intervals overlap); street 7.3 vs highway 16.6 |
+| Q6 construction (Mostafa Ayman) | 72 ZIPs; 1.46 vs 1.46 per ZIP-month; 54% of ZIPs higher during construction; no cap 1.40 vs 1.36; season-adjusted 0.20 vs 0.22 |
+| Q9 housing mix (Mostafa Alaa) | 138 ZIPs; total units ρ 0.40 with harm (0.46 repeat crashes); strongest share 3+ bedrooms 0.24; rental −0.12; shares correlate with size up to 0.63 |
+| Q10 danger before (Mostafa Alaa) | 1,416 project-ZIPs started 2023–2025: 0.6 / 8.1 / 8.9 / 20.9 / 61.4% (safest → most dangerous fifth); units 52.1% in the most dangerous fifth; that fifth had 44.5% of 2022 harm and 49.6% of 2014–2021 units; 508 confidential projects not placed |
+| Q11 doorstep (Moustafa Maged) | 5,873 buildings: 51.2% with a crash within 100 m (95.2% within 250 m); Manhattan 62.8, Bronx 54.0, Brooklyn 49.3, Queens 30.7, Staten Island 28.6 |
+| Q12 borough balance (Moustafa Maged) | Year-to-year spread (CV) units 0.28–1.07 vs harm 0.02–0.12; yearly changes ρ −0.10 (15); no borough with more units and less harm 2022 → 2025 |
