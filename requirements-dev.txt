@@ -4,3 +4,7 @@
 scikit-learn==1.9.1   # BallTree distance joins (Q8, Q11)
 scipy==1.18.1         # Spearman correlations (Q1, Q9); also needed by scikit-learn
 jupyter==1.1.1
+# Windows only: lets Python use the Windows certificate store, which fixes
+# "SSL: CERTIFICATE_VERIFY_FAILED" when the notebook downloads the data.
+# It does not turn certificate checks off.
+pip-system-certs==5.3; sys_platform == "win32"

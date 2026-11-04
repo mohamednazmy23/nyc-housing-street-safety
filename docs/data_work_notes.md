@@ -1,34 +1,66 @@
 # Data Work Notes
 
 Written to paste straight into notebook markdown cells.
-Numbers here come only from code we actually ran. Portal figures are marked "portal, to verify".
+Numbers here come only from code we actually ran.
 
-Last updated: 2026-11-03
+Last updated: 2026-11-04
 
 ## Status
 
-No exploration, cleaning or integration code has been run yet.
+| Step | Status | Notebook section |
+| --- | --- | --- |
+| Housing overview + EDA | ✅ (Mohamed Nazmy, 3 Nov) | 4 (summary table 4.x) |
+| SIRTA overview + EDA | ✅ (Ali Issa, 4 Nov) | 5 (summary table 5.x) |
+| Housing cleaning | ❌ | 6 |
+| SIRTA cleaning | ❌ | 7 |
+| Integration | ❌ | 8 |
+| Post-integration cleaning + export | ❌ | 9 |
 
-## Dataset overview (draft, to verify in code)
+## Dataset overview (verified in code, 4 Nov 2026)
 
 | | Housing | Transportation |
 | --- | --- | --- |
 | Dataset | [Affordable Housing Production by Building](https://data.cityofnewyork.us/Housing-Development/Affordable-Housing-Production-by-Building/hg8x-zxpr/about_data) | [SIRTA](https://data.cityofnewyork.us/Transportation/Serious-Injury-Response-Tracking-Analysis-Program-/xeqp-qz8h/about_data) |
 | ID | `hg8x-zxpr` | `xeqp-qz8h` |
-| Rows | 9,551 (portal, to verify) | 13,754 (portal, to verify) |
-| Columns | TO CONFIRM | TO CONFIRM |
-| Date range | Jan 2014 – Aug 2026 (portal, to verify) | Jan 2022 – Jun 2026 (portal, to verify) |
-| Geo fields | Postcode, Borough, Latitude/Longitude | ZipCode, Borough, Latitude/Longitude, street name |
+| Rows × columns | 9,551 × 41 | 13,754 × 23 (13,310 crash rows; 13,309 distinct crashes) |
+| Date range | Building completions 3 Jan 2014 – 21 Aug 2026 | Crashes 1 Jan 2022 – 30 Jun 2026 |
+| Geo fields | Postcode, Borough, Latitude/Longitude | ZipCode, Crash Borough, Latitude/Longitude, On Street, Cross Street |
 | Time fields | Project Start Date, Building Completion Date | Crash Date, Crash Time |
 
 ## Steps
 
-<!-- One section per step, in this format:
+### Housing overview and EDA (Mohamed Nazmy, 3 Nov 2026)
+See notebook section 4 and its 4.x summary table (13 issues). Not repeated here.
 
-### [Step name] (owner, date)
-**What and how:** columns, method, code reference.
-**Why:** reason for the choice.
-**Alternatives considered:** option → why rejected.
-**Before / after:** numbers from code output.
-**How we saw it:** statistic or plot that showed the issue.
--->
+### SIRTA overview and EDA (Ali Issa, 4 Nov 2026)
+
+**What and how:** full download with Listing 1; `.shape`, column list, missing-value table; checks on the rows with no Collision ID; borough vs police precinct; date and time parsing (`%m/%d/%Y`, `%H:%M`); counts at 00:00 against nearby minutes; injury counts with `describe`, IQR fences and domain rules; lookback columns; ZIP and coordinate coverage overall and by year; ZIP values; NYC bounding box; duplicate rows and Collision IDs; street-name spellings and highway-type names. Plots: crashes by hour, crashes per month, ZIP/coordinate coverage by year.
+
+**Why:** cleaning (section 7) and integration (section 8) need to know what is broken before fixing it. Every fix in 7 points back to an issue number in 5.x.
+
+**Before (raw) numbers, all from code output:**
+
+| Check | Result |
+| --- | --- |
+| Rows with no Collision ID | 444 (3.2%). Only Community Board, Council District, Census Tract, NTA (444) and BIN/BBL (433) are filled. 3 are identical |
+| Crash rows | 13,310; one Collision ID (4597666) used twice → 13,309 distinct crashes |
+| Borough missing (crash rows) | 55, all police precinct 116; precinct ranges per borough do not overlap (Manhattan 1–34, Bronx 40–52, Brooklyn 60–94, Queens 100–115, Staten Island 120–123) |
+| Dates | All parse; 1 Jan 2022 – 30 Jun 2026. Per year: 2,879 · 3,016 · 3,116 · 2,947 · 1,352 (2026, Jan–Jun) |
+| Times | All parse with `%H:%M`; 656 written `H:MM`. 227 at 00:00 vs 11 at 00:01, 36 at 01:00 |
+| Injury counts | No negatives; every crash has ≥ 1 severe injury or death. Max 19 non-severe, 7 severe, 5 deaths. IQR fences 0 / 1 / 0 flag 2,172 / 824 / 1,047 crashes |
+| Severe-injury lookback | Missing for 1,393 crashes: 766 in 2023, 627 in 2024, none in other years |
+| All-injury lookback | Max 296 (Verrazano Bridge Upper) |
+| ZIP | Missing for 5,238 crash rows (39.4%); 4,091 of them have coordinates, 1,147 have neither. ZIP filled: 16.3% (2022), 68.1% (2023), 70.0% (2024), 80.3% (2025), 74.0% (2026) |
+| ZIP values | 187 distinct; 10000–11694; 44 crashes with 10000, all inside Central Park coordinates |
+| Coordinates | 0 outside the NYC box; filled 89.0% (2022), 81.5%, 66.2%, 88.1%, 87.6% |
+| Highway | Marker filled for 1,052 crashes, 1,049 of them without ZIP. 679 more crashes on highway-type names without a marker; the word search also catches Eastern Parkway, Ocean Parkway, Kings Highway |
+| Street names | 2,952 distinct; mixed AVE/AVENUE, ST/STREET, BLVD/BOULEVARD, PKWY/PARKWAY, EXPY/EXPRESSWAY; 84 crashes with non-upper-case names; 1 with a double space |
+
+**How we saw it:** the missing-value table showed 444 rows missing together; the hour chart showed the midnight spike; the coverage bar chart showed the 2022 ZIP gap.
+
+**Alternatives considered:**
+- IQR for injury outliers → rejected: with medians of 0–1 it flags every multi-victim crash. Domain rules used instead.
+- Highway flag from a word search on street names → rejected: catches residential streets (Eastern Parkway, Ocean Parkway, Kings Highway). Suggest marker + a written list of limited-access roads.
+- Filling missing lookback with 0 → rejected: 0 means "not a repeat location", which we don't know.
+
+**Main consequence:** without filling ZIPs from coordinates, 2022 would have ZIPs for only 16.3% of crashes, which would break Q7 and Q10 (both use 2022 as the baseline).
