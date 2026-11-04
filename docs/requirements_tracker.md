@@ -4,7 +4,7 @@ Source: *Project Milestone 1* description (deadline 9 Nov 2026) and *Dataset Cat
 Status: ✅ done · 🟡 partial · ❌ missing · ➖ not applicable.
 Owners come from the *NYC DEV Team Tasks* plan.
 
-Last updated: 2026-11-04 (after housing cleaning, notebook section 6)
+Last updated: 2026-11-04 (after SIRTA cleaning, notebook section 7)
 
 ## Datasets
 
@@ -31,20 +31,20 @@ Last updated: 2026-11-04 (after housing cleaning, notebook section 6)
 | --- | --- | --- | --- | --- |
 | R10 | Dataset overview for both | ✅ | Sections 2, 4 (housing), 5 (SIRTA) | Mohamed Nazmy, Ali Issa |
 | R11 | EDA with descriptive statistics and initial plots | ✅ | Section 4 (housing), section 5 (SIRTA: 3 plots, 5.x summary of 14 issues) | Mohamed Nazmy, Ali Issa |
-| R12 | Cleaning: missing values, drop vs impute justified | 🟡 | Housing ✅ (6.1); SIRTA ❌ (7.1) | Mostafa Alaa, Ali Issa |
-| R13 | Cleaning: outliers detected and handled (IQR, domain rules) | 🟡 | Housing ✅ (6.2); SIRTA ❌ (7.2) | Mostafa Alaa, Ali Issa |
-| R14 | Cleaning: inconsistent data checked | 🟡 | Housing ✅ (6.3); SIRTA ❌ (7.3) | Mostafa Alaa, Ali Issa |
-| R15 | Cleaning: formats standardized (dates, strings, categories, geo IDs) | 🟡 | Housing ✅ (6.4); SIRTA ❌ (7.4) | Mostafa Alaa, Ali Issa |
-| R16 | Cleaning: duplicates removed | 🟡 | Housing ✅ (6.5: none found); SIRTA ❌ (7.5) | Mostafa Alaa, Ali Issa |
+| R12 | Cleaning: missing values, drop vs impute justified | ✅ | Housing 6.1; SIRTA 7.1 | Mostafa Alaa, Ali Issa |
+| R13 | Cleaning: outliers detected and handled (IQR, domain rules) | ✅ | Housing 6.2; SIRTA 7.2 | Mostafa Alaa, Ali Issa |
+| R14 | Cleaning: inconsistent data checked | ✅ | Housing 6.3; SIRTA 7.3 | Mostafa Alaa, Ali Issa |
+| R15 | Cleaning: formats standardized (dates, strings, categories, geo IDs) | ✅ | Housing 6.4; SIRTA 7.4 | Mostafa Alaa, Ali Issa |
+| R16 | Cleaning: duplicates removed | ✅ | Housing 6.5 (none found); SIRTA 7.5 (1 repeated ID resolved) | Mostafa Alaa, Ali Issa |
 | R17 | Integration documented: join key, granularity and aggregation justified | 🟡 | Plan in section 2; section 8 empty | Moustafa Maged |
 | R18 | Post-integration cleaning: join NaNs, redundant columns, dtype mismatches | ❌ | Section 9 empty. **Missing = deduction** | Moustafa Maged |
-| R19 | Visualizations that validate cleaning steps | 🟡 | Housing ✅ (6.6 before/after table + usable-buildings chart); SIRTA ❌ (7.6) | Mostafa Alaa, Ali Issa |
-| R20 | Descriptive markdown: justify decisions, alternatives, how insights were reached | 🟡 | Sections 2, 4, 5, 6 done; rest empty | Each owner; Mohamed Nazmy (consistency) |
-| R21 | Prompt log of every AI prompt used | 🟡 | Notebook 12.3: rows 1–6 (4 Nov). Mohamed's earlier prompts (C7) not added yet | Mohamed Nazmy, each member |
+| R19 | Visualizations that validate cleaning steps | ✅ | 6.6 and 7.6: missing-cells charts (raw vs clean) and usable-rows charts | Mostafa Alaa, Ali Issa |
+| R20 | Descriptive markdown: justify decisions, alternatives, how insights were reached | 🟡 | Sections 2, 4, 5, 6, 7 done; rest empty | Each owner; Mohamed Nazmy (consistency) |
+| R21 | Prompt log of every AI prompt used | 🟡 | Notebook 12.3: rows 1–8 (4 Nov). Mohamed's earlier prompts (C7) not added yet | Mohamed Nazmy, each member |
 | R22 | Dataset links in notebook | ✅ | Sections 2 and 12.1 | Mohamed Nazmy |
 | R23 | Clean code: descriptive names, modular functions | 🟡 | `src/charts.py` structure; EDA cells use descriptive names | Everyone |
 | R24 | Comments on complex logic (outliers, joins) | 🟡 | EDA cells commented; joins not written yet | Everyone |
-| R25 | Notebook runs top to bottom | 🟡 | Runs with no errors through section 6 (Python 3.12, 4 Nov; 39 code cells); later sections still empty | Mohamed Nazmy |
+| R25 | Notebook runs top to bottom | 🟡 | Runs with no errors through section 7 (Python 3.12, 4 Nov; 54 code cells); later sections still empty | Mohamed Nazmy |
 
 ## Website
 

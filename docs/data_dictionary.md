@@ -14,7 +14,7 @@ Shared tables in `data/processed/`. Chart functions receive them as `data["<tabl
 | Table | One row = | Columns | Used by |
 |---|---|---|---|
 | `buildings` | one cleaned affordable building record (a building in several projects has one row per project) | see "`buildings` columns" below | Q2, Q6, Q8, Q9, Q10, Q11 |
-| `crashes` | one cleaned SIRTA crash | crash_id, crash_datetime, year, hour, weekday, zip, borough, lat, lon, street, severe_injuries, fatalities, serious_harm, is_highway, repeat_location | Q3, Q4, Q5, Q8 |
+| `crashes` | one cleaned SIRTA crash | see "`crashes` columns" below | Q3, Q4, Q5, Q8 |
 | `zip_year` | ZIP x year | zip, borough, year, units_all, units_new_construction, units_preservation, n_crashes, severe_injuries, fatalities, serious_harm, n_repeat_crashes | Q1, Q3, Q4, Q5, Q7, Q9, Q10 |
 | `zip_month` | ZIP x month | same as zip_year, plus month | Q2, Q6 |
 | `borough_year` | borough x year | borough, year, units_all, units_new_construction, units_preservation, severe_injuries, fatalities, serious_harm | Q12 |
@@ -40,6 +40,30 @@ Shared tables in `data/processed/`. Chart functions receive them as `data["<tabl
 | size_group | category | Small (<50), Medium (50-199), Large (200+) by total_units |
 | completed_in_window | bool | Completed 1 Jan 2022 – 30 Jun 2026. **Use this, not `is_completed`, to count completions** (16 buildings were completed in Jul–Aug 2026) |
 | is_confidential, has_location, is_completed, completed_before_start, in_several_projects | bool | Flags. For Q8, Q11 and completion events (Q2, Q6) use one row per building_id |
+
+## `crashes` columns (set by SIRTA cleaning, notebook section 7)
+
+| Column | Type | Meaning |
+|---|---|---|
+| crash_id | Int64 | Collision ID; unique (13,309 crashes) |
+| crash_datetime | datetime | Date and time of the crash (time 00:00 when unknown) |
+| year | integer | Year of the crash |
+| month | datetime | First day of the crash month |
+| hour | Int64 | Hour 0–23; **missing when the time is unknown** (227 crashes) |
+| weekday | text | Monday … Sunday |
+| time_unknown | bool | Crash logged at 00:00 (time not recorded) |
+| borough | text | Always filled (55 filled from the precinct) |
+| borough_filled | bool | Borough taken from the precinct |
+| zip | text (5 characters) | Missing until section 8 fills it from coordinates; 10000 = SIRTA's own code, Central Park area |
+| lat, lon | float | Missing for 2,441 crashes (borough level only) |
+| has_location | bool | Has coordinates |
+| street | text | Clean street name (one spelling per street); missing for 15 crashes |
+| street_from_address | bool | Street taken from Address |
+| is_highway | bool | Highway marker filled or listed limited-access road (1,438 crashes). Leave out of Q8, Q11; Q5 with and without |
+| severe_injuries, fatalities, serious_harm | Int64 | People harmed in the crash; serious_harm = severe_injuries + fatalities |
+| lookback_severe | Int64 | Similar severe crashes at this location in the 3 years before; missing for 1,393 crashes (2023–2024) |
+| repeat_location | boolean | lookback_severe > 0; missing where lookback_severe is missing |
+| merged_duplicate | bool | The one crash kept from a repeated Collision ID (7.5) |
 
 ## Definitions
 - serious_harm = severe_injuries + fatalities

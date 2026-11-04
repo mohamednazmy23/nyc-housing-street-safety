@@ -12,7 +12,7 @@ Last updated: 2026-11-04
 | Housing overview + EDA | ✅ (Mohamed Nazmy, 3 Nov) | 4 (summary table 4.x) |
 | SIRTA overview + EDA | ✅ (Ali Issa, 4 Nov) | 5 (summary table 5.x) |
 | Housing cleaning | ✅ (Mostafa Alaa, 4 Nov) | 6 (summary table 6.x) |
-| SIRTA cleaning | ❌ | 7 |
+| SIRTA cleaning | ✅ (Ali Issa, 4 Nov) | 7 (summary table 7.x) |
 | Integration | ❌ | 8 |
 | Post-integration cleaning + export | ❌ | 9 |
 
@@ -101,3 +101,25 @@ See notebook section 4 and its 4.x summary table (13 issues). Not repeated here.
 | Units completed 1 Jan 2022 – 30 Jun 2026 | 115,547 (114,249 in buildings with a ZIP): 58,687 New Construction + 56,860 Preservation. Matches the hook's "about 115,500", but the hook should say "completed or preserved", or use 58,687 for newly built homes |
 
 **Alternatives considered:** see the "Alternatives rejected" lines in each 6.x markdown cell and D34–D41.
+
+### SIRTA pre-integration cleaning (Ali Issa, 4 Nov 2026)
+
+**What and how:** works on a copy of `df_transport`; result `crashes_clean` (13,309 rows × 22 columns, data-dictionary names). Decisions D42–D48; full table in notebook 7.x.
+
+| Check | Result (from code output) |
+| --- | --- |
+| Empty rows | 444 dropped; none had any crash field |
+| Borough | Precinct ranges agree in 13,255 of 13,255 crashes; 55 filled (all precinct 116 → Queens) |
+| Street | On Street missing for 2,592; Address fills 2,577 (the two are never filled together); 15 left without a street |
+| Unknown time | 227 crashes at 00:00 → hour missing, `time_unknown` |
+| Lookback | 1,393 missing, kept missing; `repeat_location` missing too |
+| ZIP | 5,238 missing before dedupe (4,091 with coordinates, left for section 8); 5,237 after |
+| Domain rules | 0 broken; harm per crash: 12,351 × 1, 752 × 2, 143 × 3, 47 × 4, 17 × 5–7 |
+| Street names | 2,952 → 2,057 spellings among crashes with On Street; 2,319 names in total |
+| Highway | Marker 1,052; limited-access list 1,417; both 1,031; total 1,438 (+386); 0 of 189 residential-parkway crashes flagged |
+| Repeated ID 4597666 | Jan 2023 IDs 4,594,367–4,610,898; Jan 2026 median 4,872,097 → kept 13 Jan 2023, fatalities 1 |
+| Before → after | rows 13,754 → 13,309; columns 23 → 22; borough missing 499 → 0; street missing 3,036 → 15; severe injuries 13,463 → 13,462; deaths 1,102 → 1,102 |
+| Usable crashes | 13,309 borough · 10,868 with coordinates · 9,855 non-highway with coordinates (Q8, Q11) · 13,082 with hour (Q3) · 11,916 with lookback (Q4) |
+| Story hook | 13,309 crashes ✓; deaths 1,102 (hook says 1,101: counting only the first duplicate row) |
+
+**Alternatives considered:** see the "Alternatives rejected" lines in each 7.x markdown cell and D42–D48.
