@@ -54,12 +54,12 @@ Shared tables in `data/processed/`. Chart functions receive them as `data["<tabl
 | time_unknown | bool | Crash logged at 00:00 (time not recorded) |
 | borough | text | Always filled (55 filled from the precinct) |
 | borough_filled | bool | Borough taken from the precinct |
-| zip | text (5 characters) | Missing until section 8 fills it from coordinates; 10000 = SIRTA's own code, Central Park area |
+| zip | text (5 characters) | Missing until section 8 fills it from coordinates (nearest located crash or building with a ZIP); 10000 = SIRTA's own code, Central Park area |
 | lat, lon | float | Missing for 2,441 crashes (borough level only) |
 | has_location | bool | Has coordinates |
 | street | text | Clean street name (one spelling per street); missing for 15 crashes |
 | street_from_address | bool | Street taken from Address |
-| is_highway | bool | Highway marker filled or listed limited-access road (1,438 crashes). Leave out of Q8, Q11; Q5 with and without |
+| is_highway | bool | Highway marker filled or listed limited-access road (1,443 crashes). Leave out of Q8, Q11; Q5 with and without |
 | severe_injuries, fatalities, serious_harm | Int64 | People harmed in the crash; serious_harm = severe_injuries + fatalities |
 | lookback_severe | Int64 | Similar severe crashes at this location in the 3 years before; missing for 1,393 crashes (2023–2024) |
 | repeat_location | boolean | lookback_severe > 0; missing where lookback_severe is missing |
