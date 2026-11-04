@@ -69,7 +69,7 @@ See notebook section 4 and its 4.x summary table (13 issues). Not repeated here.
 
 ### Housing pre-integration cleaning (Mostafa Alaa, 4 Nov 2026)
 
-**What and how:** works on a copy of `df_housing`; result `housing_clean` (9,551 rows × 37 columns, data-dictionary names). Decisions D34–D41; full table in notebook 6.x.
+**What and how:** works on a copy of `df_housing`; result `housing_clean` (9,551 rows × 38 columns, data-dictionary names). Decisions D34–D41; full table in notebook 6.x. Count completions with `completed_in_window`, not `is_completed`.
 
 **Checks that settled the open questions from the handoff (section 19, item 18):**
 
@@ -87,16 +87,17 @@ See notebook section 4 and its 4.x summary table (13 issues). Not repeated here.
 | `----` placeholders | 1,949 rows (3,898 cells), exactly the confidential rows → missing |
 | Empty breakdown cells filled with 0 | 106,280 |
 | Missing All Counted Units | 29; breakdowns all 0; 18 completed, 1 in the window; 2,525 Total Units |
-| Missing completion date | 1,666; 1,653 also no project completion; start years 2023–2026: 1,341 |
+| Missing completion date | 1,666; 1,653 also no project completion; start years 2023–2026: 1,341; started before 2022: 243 (before 2020: 124; New Construction 100+ units: 14 — Q6 caveat) |
 | IQR fence / above | 72 units / 1,249 buildings; 0 domain-rule breaks |
 | Size groups (Total Units) | 7,309 small · 1,698 medium · 544 large |
 | Completed before start | 20 (1 in the window); 0 completed after project completion; 166 complete while project isn't |
-| Buildings in several projects | 123 buildings, 247 rows (107 Preservation twice, 13 New Construction twice); 2 completed twice in the window |
+| Buildings in several projects | 123 buildings, 247 rows (107 Preservation twice, 13 New Construction twice); 2 completed twice in the window: 2864/2886 Atlantic Ave (two addresses) and 1184 River Ave (250 units in both phases, may be double-counted) |
 | Placeholder BINs | 482 (3000000: 177, 2000000: 153, 4000000: 90, 1000000: 43, 5000000: 19) |
 | Coordinate pairs | median 21 m apart (north–south), max 1,129 m; Latitude only: 86 rows |
 | Duplicates | 0 full, 0 project + building, 0 confidential look-alikes |
-| Before → after | rows 9,551 → 9,551; columns 41 → 37; affordable units 320,946 → 320,946 |
+| Before → after | rows 9,551 → 9,551; columns 41 → 38; affordable units 320,946 → 320,946. Missing cells: 16 breakdown columns → 0; number/street 0 → 1,949 (placeholders exposed); others unchanged (bar chart in 6.6) |
+| Completed in window / after it | 3,415 / 16 (Jul–Aug 2026) |
 | Usable buildings | 9,551 borough · 7,593 with ZIP · 2,599 completed in window · 1,670 New Construction |
-| Units completed 1 Jan 2022 – 30 Jun 2026 | 115,547 (114,249 in buildings with a ZIP) — confirms the Story hook's "about 115,500" |
+| Units completed 1 Jan 2022 – 30 Jun 2026 | 115,547 (114,249 in buildings with a ZIP): 58,687 New Construction + 56,860 Preservation. Matches the hook's "about 115,500", but the hook should say "completed or preserved", or use 58,687 for newly built homes |
 
 **Alternatives considered:** see the "Alternatives rejected" lines in each 6.x markdown cell and D34–D41.

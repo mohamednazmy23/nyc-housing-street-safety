@@ -38,7 +38,8 @@ Shared tables in `data/processed/`. Chart functions receive them as `data["<tabl
 | units_studio, units_1br, units_2br, units_3br, units_4br, units_5br, units_6br_plus, units_unknown_br | Int64 | Units by bedroom size (0 = none) |
 | units_rental, units_homeownership | Int64 | Units by tenure (0 = none) |
 | size_group | category | Small (<50), Medium (50-199), Large (200+) by total_units |
-| is_confidential, has_location, is_completed, completed_before_start, in_several_projects | bool | Flags; for Q8/Q11 use one row per building_id |
+| completed_in_window | bool | Completed 1 Jan 2022 – 30 Jun 2026. **Use this, not `is_completed`, to count completions** (16 buildings were completed in Jul–Aug 2026) |
+| is_confidential, has_location, is_completed, completed_before_start, in_several_projects | bool | Flags. For Q8, Q11 and completion events (Q2, Q6) use one row per building_id |
 
 ## Definitions
 - serious_harm = severe_injuries + fatalities
