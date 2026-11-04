@@ -1,6 +1,7 @@
-# Data Dictionary (proposal, to confirm with Moustafa Maged)
+# Data Dictionary
 
-Shared tables in `data/processed/`. Chart functions receive them as `data["<table>"]`.
+Shared tables in `data/processed/`, exported by the notebook (section 9.4). Chart functions receive them as `data["<table>"]`.
+Always load them with `from data_loader import load_tables` (`src/data_loader.py`), which sets the column types below.
 
 ## Formats (all tables)
 - `zip`: 5-character text, e.g. "10451" (never a number)
@@ -15,10 +16,14 @@ Shared tables in `data/processed/`. Chart functions receive them as `data["<tabl
 |---|---|---|---|
 | `buildings` | one cleaned affordable building record (a building in several projects has one row per project) | see "`buildings` columns" below | Q2, Q6, Q8, Q9, Q10, Q11 |
 | `crashes` | one cleaned SIRTA crash | see "`crashes` columns" below | Q3, Q4, Q5, Q8 |
-| `zip_year` | ZIP x year | zip, borough, year, units_all, units_new_construction, units_preservation, n_crashes, severe_injuries, fatalities, serious_harm, n_repeat_crashes | Q1, Q3, Q4, Q5, Q7, Q9, Q10 |
-| `zip_month` | ZIP x month | same as zip_year, plus month | Q2, Q6 |
-| `borough_year` | borough x year | borough, year, units_all, units_new_construction, units_preservation, severe_injuries, fatalities, serious_harm | Q12 |
-| `building_crash_counts` | one building | building_id, crashes_100m, crashes_250m | Q11 |
+| `zip_year` | ZIP x year (190 ZIPs x 2022–2026 = 950 rows; every combination, 0 = nothing happened) | zip, borough, year, then the count columns below | Q1, Q3, Q4, Q5, Q7, Q9, Q10 |
+| `zip_month` | ZIP x month (190 x 54 = 10,260 rows) | zip, borough, month, year, then the count columns below | Q2, Q6 |
+| `borough_year` | borough x year (25 rows); includes records without a ZIP | borough, year, then the count columns below | Q12 |
+| `building_crash_counts` | one located building (7,470 rows) | building_id, crashes_100m, crashes_250m (non-highway serious crashes within that distance, whole window) | Q11 |
+
+**Count columns** (whole numbers, in `zip_year`, `zip_month`, `borough_year`): units_new_construction, units_preservation, units_all (affordable units completed inside the window), n_buildings_completed, n_crashes, severe_injuries, fatalities, serious_harm, n_repeat_crashes (lookback above 0), n_crashes_with_lookback (denominator for Q4's share), n_highway_crashes.
+
+**ZIP tables cover** 98.9% of the units completed in the window and 88.8% of the serious harm; the rest has no ZIP and is only in `borough_year`. A ZIP in two boroughs takes the borough most of its records are in.
 
 ## `buildings` columns (set by housing cleaning, notebook section 6)
 
@@ -54,7 +59,7 @@ Shared tables in `data/processed/`. Chart functions receive them as `data["<tabl
 | time_unknown | bool | Crash logged at 00:00 (time not recorded) |
 | borough | text | Always filled (55 filled from the precinct) |
 | borough_filled | bool | Borough taken from the precinct |
-| zip | text (5 characters) | Missing until section 8 fills it from coordinates (nearest located crash or building with a ZIP); 10000 = SIRTA's own code, Central Park area |
+| zip | text (5 characters) | Filled in section 8 where possible; missing for 1,420 crashes (no coordinates, or no point within 500 m); 10000 = SIRTA's own code, Central Park area |
 | lat, lon | float | Missing for 2,441 crashes (borough level only) |
 | has_location | bool | Has coordinates |
 | street | text | Clean street name (one spelling per street); missing for 15 crashes |
@@ -64,6 +69,10 @@ Shared tables in `data/processed/`. Chart functions receive them as `data["<tabl
 | lookback_severe | Int64 | Similar severe crashes at this location in the 3 years before; missing for 1,393 crashes (2023–2024) |
 | repeat_location | boolean | lookback_severe > 0; missing where lookback_severe is missing |
 | merged_duplicate | bool | The one crash kept from a repeated Collision ID (7.5) |
+| zip_filled | bool | ZIP filled in section 8 from the nearest crash or building with a ZIP (3,817 crashes) |
+| zip_match_m | float | Distance in metres to that nearest point (only for filled ZIPs; at most 500) |
+| dist_nearest_building_m | float | Distance in metres to the nearest affordable building completed by 30 Jun 2026 |
+| near_building_250m | bool | dist_nearest_building_m is 250 m or less (Q8) |
 
 ## Definitions
 - serious_harm = severe_injuries + fatalities

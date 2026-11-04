@@ -4,7 +4,7 @@ Source: *Project Milestone 1* description (deadline 9 Nov 2026) and *Dataset Cat
 Status: ✅ done · 🟡 partial · ❌ missing · ➖ not applicable.
 Owners come from the *NYC DEV Team Tasks* plan.
 
-Last updated: 2026-11-04 (after SIRTA cleaning, notebook section 7)
+Last updated: 2026-11-04 (after integration, notebook sections 8–9)
 
 ## Datasets
 
@@ -36,15 +36,15 @@ Last updated: 2026-11-04 (after SIRTA cleaning, notebook section 7)
 | R14 | Cleaning: inconsistent data checked | ✅ | Housing 6.3; SIRTA 7.3 | Mostafa Alaa, Ali Issa |
 | R15 | Cleaning: formats standardized (dates, strings, categories, geo IDs) | ✅ | Housing 6.4; SIRTA 7.4 | Mostafa Alaa, Ali Issa |
 | R16 | Cleaning: duplicates removed | ✅ | Housing 6.5 (none found); SIRTA 7.5 (1 repeated ID resolved) | Mostafa Alaa, Ali Issa |
-| R17 | Integration documented: join key, granularity and aggregation justified | 🟡 | Plan in section 2; section 8 empty | Moustafa Maged |
-| R18 | Post-integration cleaning: join NaNs, redundant columns, dtype mismatches | ❌ | Section 9 empty. **Missing = deduction** | Moustafa Maged |
+| R17 | Integration documented: join key, granularity and aggregation justified | ✅ | Section 8 (keys, ZIP fill tested, levels, distance join), D49–D52 | Moustafa Maged |
+| R18 | Post-integration cleaning: join NaNs, redundant columns, dtype mismatches | ✅ | Section 9.1–9.3 (NaNs → 0, 17 checks, type fixes), D53 | Moustafa Maged |
 | R19 | Visualizations that validate cleaning steps | ✅ | 6.6 and 7.6: missing-cells charts (raw vs clean) and usable-rows charts | Mostafa Alaa, Ali Issa |
 | R20 | Descriptive markdown: justify decisions, alternatives, how insights were reached | 🟡 | Sections 2, 4, 5, 6, 7 done; rest empty | Each owner; Mohamed Nazmy (consistency) |
-| R21 | Prompt log of every AI prompt used | 🟡 | Notebook 12.3: rows 1–8 (4 Nov). Mohamed's earlier prompts (C7) not added yet | Mohamed Nazmy, each member |
+| R21 | Prompt log of every AI prompt used | 🟡 | Notebook 12.3: rows 1–10 in task order (one row per task), all members so far (Mohamed's from his own log, task-related prompts only). New rows needed for integration, charts, website, story | Mohamed Nazmy, each member |
 | R22 | Dataset links in notebook | ✅ | Sections 2 and 12.1 | Mohamed Nazmy |
 | R23 | Clean code: descriptive names, modular functions | 🟡 | `src/charts.py` structure; EDA cells use descriptive names | Everyone |
 | R24 | Comments on complex logic (outliers, joins) | 🟡 | EDA cells commented; joins not written yet | Everyone |
-| R25 | Notebook runs top to bottom | 🟡 | Runs with no errors through section 7 (Python 3.12, 4 Nov; 54 code cells); later sections still empty | Mohamed Nazmy |
+| R25 | Notebook runs top to bottom | 🟡 | Runs with no errors through section 9 (Python 3.12, 4 Nov; 64 code cells); section 10 (charts) still empty | Mohamed Nazmy |
 
 ## Website
 
@@ -63,7 +63,7 @@ Last updated: 2026-11-04 (after SIRTA cleaning, notebook section 7)
 
 | ID | Requirement | Status | Where | Owner |
 | --- | --- | --- | --- | --- |
-| R34 | All code, notebook and website files in a GitHub repo | 🟡 | Structure, notebook, `charts.py`, logs pushed; app and processed data missing | Whole team |
+| R34 | All code, notebook and website files in a GitHub repo | 🟡 | Structure, notebook, `charts.py`, logs, processed data (`data/processed/`) and loader pushed; app missing | Whole team |
 | R35 | README: setup, deployment, each member's contribution | ❌ | — | Mostafa Ayman |
 | R36 | Story quality: clear question, honest limits, no unsupported causal claims | 🟡 | Story doc framework | Mostafa Ayman, everyone |
 | R37 | One email to ICS503Data@gmail.com: member IDs, repo link, deploy link, dataset links | ❌ | Member IDs still TO CONFIRM | Baraa Tantawy |
