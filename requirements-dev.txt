@@ -1,0 +1,6 @@
+# Notebook, cleaning and integration work (Python 3.12).
+# Includes everything the website needs, plus the tools below.
+-r requirements.txt
+scikit-learn==1.9.1   # BallTree distance joins (Q8, Q11)
+scipy==1.18.1         # Spearman correlations (Q1, Q9); also needed by scikit-learn
+jupyter==1.1.1
