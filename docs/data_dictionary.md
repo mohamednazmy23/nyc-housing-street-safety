@@ -13,12 +13,33 @@ Shared tables in `data/processed/`. Chart functions receive them as `data["<tabl
 
 | Table | One row = | Columns | Used by |
 |---|---|---|---|
-| `buildings` | one cleaned affordable building | building_id, project_id, zip, borough, lat, lon, construction_type, project_start, completion_date, all_counted_units, total_units, income-tier, bedroom and tenure unit columns | Q2, Q6, Q8, Q9, Q10, Q11 |
+| `buildings` | one cleaned affordable building record (a building in several projects has one row per project) | see "`buildings` columns" below | Q2, Q6, Q8, Q9, Q10, Q11 |
 | `crashes` | one cleaned SIRTA crash | crash_id, crash_datetime, year, hour, weekday, zip, borough, lat, lon, street, severe_injuries, fatalities, serious_harm, is_highway, repeat_location | Q3, Q4, Q5, Q8 |
 | `zip_year` | ZIP x year | zip, borough, year, units_all, units_new_construction, units_preservation, n_crashes, severe_injuries, fatalities, serious_harm, n_repeat_crashes | Q1, Q3, Q4, Q5, Q7, Q9, Q10 |
 | `zip_month` | ZIP x month | same as zip_year, plus month | Q2, Q6 |
 | `borough_year` | borough x year | borough, year, units_all, units_new_construction, units_preservation, severe_injuries, fatalities, serious_harm | Q12 |
 | `building_crash_counts` | one building | building_id, crashes_100m, crashes_250m | Q11 |
+
+## `buildings` columns (set by housing cleaning, notebook section 6)
+
+| Column | Type | Meaning |
+|---|---|---|
+| building_id, project_id | Int64 | IDs; building_id is missing for confidential rows |
+| project_name, number, street | text | Address fields; missing for confidential rows |
+| borough | text | Always filled |
+| zip | text (5 characters) | Missing for 1,958 rows (no location) |
+| lat, lon | float | Missing for the same 1,958 rows |
+| construction_type | text | New Construction or Preservation |
+| project_start, completion_date | datetime | completion_date missing = not completed yet |
+| completion_year | Int64 | Year of completion_date |
+| all_counted_units | Int64 | Affordable units; missing in 29 rows (unknown, not 0) |
+| total_units | Int64 | Affordable + market-rate; never sum across rows of the same building |
+| units_extremely_low, units_very_low, units_low, units_moderate, units_middle, units_other_income | Int64 | Units by income tier (0 = none) |
+| units_studio, units_1br, units_2br, units_3br, units_4br, units_5br, units_6br_plus, units_unknown_br | Int64 | Units by bedroom size (0 = none) |
+| units_rental, units_homeownership | Int64 | Units by tenure (0 = none) |
+| size_group | category | Small (<50), Medium (50-199), Large (200+) by total_units |
+| completed_in_window | bool | Completed 1 Jan 2022 – 30 Jun 2026. **Use this, not `is_completed`, to count completions** (16 buildings were completed in Jul–Aug 2026) |
+| is_confidential, has_location, is_completed, completed_before_start, in_several_projects | bool | Flags. For Q8, Q11 and completion events (Q2, Q6) use one row per building_id |
 
 ## Definitions
 - serious_harm = severe_injuries + fatalities
