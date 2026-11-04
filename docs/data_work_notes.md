@@ -51,10 +51,12 @@ See notebook section 4 and its 4.x summary table (13 issues). Not repeated here.
 | Severe-injury lookback | Missing for 1,393 crashes: 766 in 2023, 627 in 2024, none in other years |
 | All-injury lookback | Max 296 (Verrazano Bridge Upper) |
 | ZIP | Missing for 5,238 crash rows (39.4%); 4,091 of them have coordinates, 1,147 have neither. ZIP filled: 16.3% (2022), 68.1% (2023), 70.0% (2024), 80.3% (2025), 74.0% (2026) |
-| ZIP values | 187 distinct; 10000–11694; 44 crashes with 10000, all inside Central Park coordinates |
+| ZIP values | 187 distinct; 10000–11694. 44 crashes have ZIP 10000 (not a postal ZIP): only 6 have coordinates, and those fall in the Central Park area; 2 name park drives (West Drive, East Drive); the rest have no location |
 | Coordinates | 0 outside the NYC box; filled 89.0% (2022), 81.5%, 66.2%, 88.1%, 87.6% |
-| Highway | Marker filled for 1,052 crashes, 1,049 of them without ZIP. 679 more crashes on highway-type names without a marker; the word search also catches Eastern Parkway, Ocean Parkway, Kings Highway |
-| Street names | 2,952 distinct; mixed AVE/AVENUE, ST/STREET, BLVD/BOULEVARD, PKWY/PARKWAY, EXPY/EXPRESSWAY; 84 crashes with non-upper-case names; 1 with a double space |
+| Highway | Marker filled for 1,052 crashes, 1,049 of them without ZIP. Up to 679 more crashes on highway-type names without a marker; the word search also catches residential streets (Eastern Parkway, Ocean Parkway, Kings Highway: at least 123 crashes), so the real number is lower |
+| Street names | 2,952 distinct; mixed AVE/AVENUE, ST/STREET, BLVD/BOULEVARD, PKWY/PARKWAY, EXPY/EXPRESSWAY; typos (e.g. AVNEUE); 84 crashes with non-upper-case names; 1 with a double space. `ST` = Street as the last word (1,130 crashes), Saint as the first word (20) |
+| Duplicates | 3 rows are exact copies of another row, all among the 444 empty rows; no crash row repeated in full |
+| Seasons and hours | Crashes peak at 17:00–18:00 (849, 834), fewest at 05:00 (266); more crashes May–October than January–February |
 
 **How we saw it:** the missing-value table showed 444 rows missing together; the hour chart showed the midnight spike; the coverage bar chart showed the 2022 ZIP gap.
 
