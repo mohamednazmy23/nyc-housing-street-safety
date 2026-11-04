@@ -4359,7 +4359,7 @@ crash_id,crash_datetime,year,month,hour,weekday,time_unknown,borough,borough_fil
 4645703,2023-07-15 16:56:00,2023,2023-07-01,16,Saturday,False,Bronx,False,10467,40.869545,-73.87972,True,WEBSTER AVENUE,False,False,1,0,1,0,False,False,False,,164.0,True,True,False
 4645729,2023-07-12 16:31:00,2023,2023-07-01,16,Wednesday,False,Manhattan,False,10027,40.812103,-73.94976,True,WEST 128 STREET,False,False,1,0,1,0,False,False,False,,45.0,True,True,True
 4645773,2023-07-16 00:30:00,2023,2023-07-01,0,Sunday,False,Brooklyn,False,11212,40.67264,-73.907646,True,STONE AVENUE,True,False,1,0,1,0,False,False,False,,3.0,True,True,True
-4645835,2023-07-11 18:39:00,2023,2023-07-01,18,Tuesday,False,Bronx,False,10462,40.83871,-73.84951,True,ZEREGA AVENUE,True,False,1,0,1,0,False,False,False,,250.0,True,False,False
+4645835,2023-07-11 18:39:00,2023,2023-07-01,18,Tuesday,False,Bronx,False,10462,40.83871,-73.84951,True,ZEREGA AVENUE,True,False,1,0,1,0,False,False,False,,250.0,False,False,False
 4645879,2023-07-11 21:43:00,2023,2023-07-01,21,Tuesday,False,Bronx,False,10463,40.875122,-73.905174,True,MAJOR DEEGAN EXPRESSWAY,False,True,2,0,2,0,False,False,True,149.0,267.0,False,False,False
 4645934,2023-07-11 03:45:00,2023,2023-07-01,3,Tuesday,False,Manhattan,False,10011,40.742252,-74.00071,True,8 AVENUE,False,False,1,0,1,0,False,False,False,,344.0,False,False,False
 4645959,2023-07-13 15:10:00,2023,2023-07-01,15,Thursday,False,Bronx,False,10469,40.88024,-73.84873,True,EAST 221 STREET,True,False,1,0,1,0,False,False,False,,148.0,True,True,True
@@ -8527,7 +8527,7 @@ crash_id,crash_datetime,year,month,hour,weekday,time_unknown,borough,borough_fil
 4822080,2025-06-17 18:30:00,2025,2025-06-01,18,Tuesday,False,Brooklyn,False,11204,40.62051,-73.99247,True,65 STREET,False,False,2,0,2,0,False,False,False,,611.0,False,False,False
 4822144,2025-06-22 08:00:00,2025,2025-06-01,8,Sunday,False,Bronx,False,10451,40.82284,-73.92876,True,RIVER AVENUE,False,False,1,0,1,0,False,False,False,,320.0,False,False,False
 4822157,2025-06-21 10:45:00,2025,2025-06-01,10,Saturday,False,Manhattan,False,10025,40.79275,-73.97131,True,WEST 94 STREET,False,False,1,0,1,0,False,False,False,,60.0,True,False,True
-4822168,2025-06-18 22:00:00,2025,2025-06-01,22,Wednesday,False,Manhattan,False,10001,40.751522,-73.99395,True,WEST 33 STREET,False,False,1,0,1,0,False,False,False,,250.0,True,False,False
+4822168,2025-06-18 22:00:00,2025,2025-06-01,22,Wednesday,False,Manhattan,False,10001,40.751522,-73.99395,True,WEST 33 STREET,False,False,1,0,1,0,False,False,False,,250.0,False,False,False
 4822169,2025-06-19 08:50:00,2025,2025-06-01,8,Thursday,False,Brooklyn,False,11207,40.65906,-73.88458,True,VAN SICLEN AVENUE,False,False,1,0,1,0,False,False,False,,17.0,True,True,False
 4822209,2025-06-20 09:30:00,2025,2025-06-01,9,Friday,False,Bronx,False,10454,40.807507,-73.917015,True,SAINT ANNS AVENUE,False,False,1,0,1,1,True,False,False,,95.0,True,True,True
 4822231,2025-06-21 16:30:00,2025,2025-06-01,16,Saturday,False,Brooklyn,False,11235,40.575874,-73.95947,True,BRIGHTWATER COURT,False,False,1,0,1,0,False,False,False,,140.0,True,False,True
