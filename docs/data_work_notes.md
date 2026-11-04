@@ -13,8 +13,8 @@ Last updated: 2026-11-04
 | SIRTA overview + EDA | ✅ (Ali Issa, 4 Nov) | 5 (summary table 5.x) |
 | Housing cleaning | ✅ (Mostafa Alaa, 4 Nov) | 6 (summary table 6.x) |
 | SIRTA cleaning | ✅ (Ali Issa, 4 Nov) | 7 (summary table 7.x) |
-| Integration | ❌ | 8 |
-| Post-integration cleaning + export | ❌ | 9 |
+| Integration | ✅ (Moustafa Maged, 4 Nov) | 8 |
+| Post-integration cleaning + export | ✅ (Moustafa Maged, 4 Nov) | 9 (summary table 8–9) |
 
 ## Dataset overview (verified in code, 4 Nov 2026)
 
@@ -123,3 +123,20 @@ See notebook section 4 and its 4.x summary table (13 issues). Not repeated here.
 | Story hook | 13,309 crashes ✓; deaths 1,102. The hook's 1,101 equals the first raw row per Collision ID (printed in 7.6); it may also come from an earlier export |
 
 **Alternatives considered:** see the "Alternatives rejected" lines in each 7.x markdown cell and D42–D48.
+
+### Integration and post-integration cleaning (Moustafa Maged, 4 Nov 2026)
+
+**What and how:** join keys checked; missing crash ZIPs filled from the nearest located point; three aggregated tables on full grids; distance join; NaNs, columns and types cleaned; six tables exported. Decisions D49–D53; summary table in notebook 8–9.
+
+| Check | Result (from code output) |
+| --- | --- |
+| ZIPs | housing 158, crashes 187, both 155; only housing: 10044, 10158, 10303; only crashes: 32 |
+| ZIP-fill test (6,771 crashes with a known postal ZIP; own row skipped; 980 share exact coordinates) | 93.0% right; 97.3% (0–50 m), 92.8% (50–100), 88.3% (100–200), 86.8% (200–500), 72.6% (over 500). ZIP 10000 not used as a reference |
+| ZIP fill | 4,091 candidates; 3,817 filled (median 84 m); 274 too far (102 highway); 11,889 of 13,309 crashes with a ZIP; by year 87.7% · 88.0% · 86.0% · 94.2% · 92.7% |
+| Border ZIPs | 6 ZIPs in two boroughs; 14 crashes differ from their ZIP's borough |
+| Tables | zip_year 950 rows; zip_month 10,260; borough_year 25; building_crash_counts 7,470 |
+| Distance join | 9,854 street crashes; buildings with a serious crash within 100 m: 51.2% of the 5,873 completed by June 2026 (50.4% of all 7,470); within 250 m: 95.2% (94.7%); 5,707 street crashes within 250 m of a completed building; `near_building_250m` unknown for 2,441 crashes without coordinates |
+| Join NaNs | zip_year: 469 cells without units, 72 without crashes → 0; none left |
+| ZIP-table coverage | 98.9% of units completed in the window (114,249 of 115,547); 88.8% of serious harm (12,930 of 14,564) |
+| Consistency | 17 of 17 checks True; no `_x`/`_y` columns |
+| Export | 6 CSVs, about 4.7 MB; all identical after reload with `src/data_loader.py` |
