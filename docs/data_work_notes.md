@@ -154,11 +154,11 @@ See notebook section 4 and its 4.x summary table (13 issues). Not repeated here.
 
 | Question | Key numbers (from code output) |
 | --- | --- |
-| Q3 timing (Ali Issa) | Night 22:00–05:59: 25.3% of harm in high-housing ZIPs vs 22.6% (+2.7; random ZIP sets reach it in 4.3% of 2,000 draws); weekend 29.9 vs 27.8; morning rush 9.7 vs 10.8; evening 35.6 vs 35.6 |
-| Q4 repeat spots (Ali Issa) | High third 8.4% (2022) → 10.2 → 7.3 → 8.8% (2025); four years 8.7% vs 6.2% low, 5.3% medium |
-| Q5 deadliness (Mostafa Ayman) | Street crashes, deaths per 100: 5.54 / 7.95 / 5.52 / 5.67 (fewest → most units); most-units 5.7 vs others pooled 6.4 (intervals overlap); street 7.3 vs highway 16.6 |
-| Q6 construction (Mostafa Ayman) | 72 ZIPs; 1.46 vs 1.46 per ZIP-month; 54% of ZIPs higher during construction; no cap 1.40 vs 1.36; season-adjusted 0.20 vs 0.22 |
+| Q3 timing (Ali Issa) | Night 22:00–05:59: 25.4% of harm in high-housing ZIPs vs 22.6% (+2.8; random ZIP sets reach it in 4.2% of 2,000 draws); weekend 29.9 vs 27.8; morning rush 9.7 vs 10.8; evening 35.4 vs 35.7 |
+| Q4 repeat spots (Ali Issa) | High third 8.5% (2022) → 10.4 → 7.3 → 8.9% (2025); low 7.5 → 8.4, medium 4.0 → 6.5 (no third falls); four years 8.7% vs 6.1% low, 5.3% medium |
+| Q5 deadliness (Mostafa Ayman) | Street crashes, deaths per 100: 5.54 / 7.95 / 5.60 / 5.61 (fewest → most units); most-units 5.6 vs others pooled 6.4 (intervals overlap); street 7.3 vs highway 16.6; 4 zero-unit ZIPs in the second quarter by tie-break |
+| Q6 construction (Mostafa Ayman) | 72 ZIPs; 1.46 vs 1.46 per ZIP-month; 54% of ZIPs higher during construction; no cap 1.40 vs 1.36; season-adjusted 0.20 vs 0.22; month-year-adjusted 0.18 vs 0.23 (construction months 61% in 2024–2025 vs 48%) |
 | Q9 housing mix (Mostafa Alaa) | 138 ZIPs; total units ρ 0.40 with harm (0.46 repeat crashes); strongest share 3+ bedrooms 0.24; rental −0.12; shares correlate with size up to 0.63 |
 | Q10 danger before (Mostafa Alaa) | 1,416 project-ZIPs started 2023–2025: 0.6 / 8.1 / 8.9 / 20.9 / 61.4% (safest → most dangerous fifth); units 52.1% in the most dangerous fifth; that fifth had 44.5% of 2022 harm and 49.6% of 2014–2021 units; 508 confidential projects not placed |
 | Q11 doorstep (Moustafa Maged) | 5,873 buildings: 51.2% with a crash within 100 m (95.2% within 250 m); Manhattan 62.8, Bronx 54.0, Brooklyn 49.3, Queens 30.7, Staten Island 28.6 |
-| Q12 borough balance (Moustafa Maged) | Year-to-year spread (CV) units 0.28–1.07 vs harm 0.02–0.12; yearly changes ρ −0.10 (15); no borough with more units and less harm 2022 → 2025 |
+| Q12 borough balance (Moustafa Maged) | Year-to-year spread (CV) units 0.28–1.07 vs harm 0.02–0.12; yearly changes ρ −0.10 (15); no borough with more units and less harm 2022 → 2025; four-year harm: Brooklyn 3,831, Queens 3,366, Manhattan 2,601, Bronx 2,584 (hypothesis half supported) |

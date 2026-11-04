@@ -317,6 +317,14 @@ def no_data(name, message):
     return fig
 
 
+def equal_groups(values, labels):
+    """Split a Series into len(labels) equal-sized, ordered groups by value. Assigned by rank position
+    (ties broken by index order), so the result never depends on how a pandas version places qcut's edges."""
+    position = values.rank(method="first").astype(int).to_numpy() - 1          # 0 .. n-1
+    codes = position * len(labels) // len(values)
+    return pd.Series(pd.Categorical.from_codes(codes, categories=labels, ordered=True), index=values.index)
+
+
 def zip_housing_groups(data, filters, n_groups, labels, use=("borough", "year")):
     """Split ZIPs into equal-sized groups by affordable units completed (the housing-type filter picks
     the units column). Many ZIPs have 0 units, so ties are broken by ZIP order to keep the groups equal."""
@@ -324,8 +332,7 @@ def zip_housing_groups(data, filters, n_groups, labels, use=("borough", "year"))
     per_zip = apply_filters(data["zip_year"], filters, use=use).groupby("zip")[units].sum()
     if len(per_zip) < n_groups:
         return pd.Series(dtype="category"), per_zip
-    groups = pd.qcut(per_zip.rank(method="first"), n_groups, labels=labels)
-    return groups, per_zip
+    return equal_groups(per_zip, labels[:n_groups]), per_zip
 
 
 def q3_hour_shares(data, filters):
@@ -869,7 +876,7 @@ def q10_projects_by_danger(data, filters):
     harm_2022 = zip_year[zip_year["year"] == 2022].groupby("zip")["serious_harm"].sum()
     if len(harm_2022) < 5:
         return pd.DataFrame(), None
-    groups = pd.qcut(harm_2022.rank(method="first"), 5, labels=DANGER_GROUPS)
+    groups = equal_groups(harm_2022, DANGER_GROUPS)
     year = filters.get("year", "All")
     years = [year] if year in Q10_START_YEARS else Q10_START_YEARS
     buildings = apply_filters(data["buildings"], filters, use=("borough", "housing_type"))
