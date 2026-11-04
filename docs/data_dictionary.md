@@ -73,6 +73,7 @@ Always load them with `from data_loader import load_tables` (`src/data_loader.py
 | zip_match_m | float | Distance in metres to that nearest point (only for filled ZIPs; at most 500) |
 | dist_nearest_building_m | float | Distance in metres to the nearest affordable building completed by 30 Jun 2026 |
 | near_building_250m | boolean | dist_nearest_building_m is 250 m or less (Q8); missing (unknown) for crashes without coordinates |
+| near_new_construction_250m, near_preservation_250m | boolean | Same, counting only New Construction or only Preservation buildings (Q8's housing-type filter) |
 
 ## Definitions
 - serious_harm = severe_injuries + fatalities

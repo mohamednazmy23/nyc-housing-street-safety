@@ -140,3 +140,12 @@ See notebook section 4 and its 4.x summary table (13 issues). Not repeated here.
 | ZIP-table coverage | 98.9% of units completed in the window (114,249 of 115,547); 88.8% of serious harm (12,930 of 14,564) |
 | Consistency | 17 of 17 checks True; no `_x`/`_y` columns |
 | Export | 6 CSVs, about 4.7 MB; all identical after reload with `src/data_loader.py` |
+
+### Research questions: Q1, Q2 (Mohamed Nazmy, 4 Nov) and Q7, Q8 (Baraa Tantawy, 5 Nov)
+
+| Question | Key numbers (from code output) |
+| --- | --- |
+| Q1 housing vs danger by ZIP | 190 ZIPs; top quarter (48) got 87.7% of 57,877 New Construction units and had 41.2% of 12,930 serious harm; Spearman ρ 0.67 (0.48 among the 127 ZIPs with units; 0.64 all types; 0.53 deaths); by borough 0.25–0.66 |
+| Q2 before/after completion | 925 buildings in 107 ZIPs; change per ZIP-month: small +0.07, medium +0.02, large −0.03; baseline (52 ZIPs) +0.07 |
+| Q7 growth vs change | 87 ZIPs pass baselines; growth median 55% (0–327%); harm change median +7% (−78% to +183%); ρ −0.02 (crash counts −0.05; other baselines −0.06 to 0.06); quadrants 23 / 20 / 20 / 24; ZIP coverage 87.7% → 94.2% makes ZIP-table harm rise 12.0% vs 4.4% in all crashes |
+| Q8 corridors near housing | 5,700 street crashes within 250 m (58%), 6,061 serious harm, 1,449 corridors; top 10 hold 9.6% (top 10% hold 48.7%); top: Atlantic Ave 71, Eastern Pkwy 67, Jerome Ave 65, Grand Concourse 60; 7 of 10 also in the city-wide top 10; repeat share 11.9% (top 10) vs 7.6%; NC-only top 10 10.7%, Preservation-only 12.5% |
