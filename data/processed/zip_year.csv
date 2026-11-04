@@ -1,9 +1,9 @@
 zip,borough,year,units_new_construction,units_preservation,units_all,n_buildings_completed,n_crashes,severe_injuries,fatalities,serious_harm,n_repeat_crashes,n_crashes_with_lookback,n_highway_crashes
-10000,Manhattan,2022,0,0,0,0,2,2,0,2,0,2,0
+10000,Manhattan,2022,0,0,0,0,1,1,0,1,0,1,0
 10000,Manhattan,2023,0,0,0,0,3,3,0,3,0,3,0
 10000,Manhattan,2024,0,0,0,0,1,1,0,1,0,0,0
-10000,Manhattan,2025,0,0,0,0,32,32,1,33,13,32,0
-10000,Manhattan,2026,0,0,0,0,9,9,0,9,6,9,0
+10000,Manhattan,2025,0,0,0,0,31,31,1,32,13,31,0
+10000,Manhattan,2026,0,0,0,0,8,8,0,8,5,8,0
 10001,Manhattan,2022,0,0,0,0,16,18,0,18,0,16,0
 10001,Manhattan,2023,378,0,378,2,26,24,2,26,2,21,0
 10001,Manhattan,2024,35,0,35,1,21,24,0,24,1,16,0
@@ -107,8 +107,8 @@ zip,borough,year,units_new_construction,units_preservation,units_all,n_buildings
 10023,Manhattan,2022,0,0,0,0,15,16,0,16,0,15,0
 10023,Manhattan,2023,0,0,0,0,18,18,0,18,0,11,0
 10023,Manhattan,2024,1,0,1,1,14,14,0,14,3,12,0
-10023,Manhattan,2025,0,303,303,2,9,9,0,9,1,9,0
-10023,Manhattan,2026,0,0,0,0,6,6,0,6,0,6,1
+10023,Manhattan,2025,0,303,303,2,10,10,0,10,1,10,0
+10023,Manhattan,2026,0,0,0,0,7,7,0,7,1,7,1
 10024,Manhattan,2022,0,0,0,0,7,7,0,7,1,7,1
 10024,Manhattan,2023,0,179,179,3,15,16,0,16,0,9,2
 10024,Manhattan,2024,0,40,40,3,12,12,0,12,1,9,0
@@ -199,7 +199,7 @@ zip,borough,year,units_new_construction,units_preservation,units_all,n_buildings
 10044,Manhattan,2024,0,0,0,0,0,0,0,0,0,0,0
 10044,Manhattan,2025,0,0,0,0,0,0,0,0,0,0,0
 10044,Manhattan,2026,0,0,0,0,0,0,0,0,0,0,0
-10065,Manhattan,2022,0,0,0,0,11,11,0,11,2,11,1
+10065,Manhattan,2022,0,0,0,0,12,12,0,12,2,12,1
 10065,Manhattan,2023,0,0,0,0,14,17,1,18,0,11,1
 10065,Manhattan,2024,0,0,0,0,9,9,0,9,0,9,2
 10065,Manhattan,2025,0,0,0,0,9,9,0,9,0,9,0

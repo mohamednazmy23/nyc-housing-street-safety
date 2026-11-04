@@ -8,7 +8,7 @@ Always load them with `from data_loader import load_tables` (`src/data_loader.py
 - `borough`: Bronx, Brooklyn, Manhattan, Queens, Staten Island
 - `construction_type`: New Construction, Preservation
 - Dates: pandas datetime. `year`: integer. `month`: first day of the month (datetime)
-- Analysis window: 2022-01-01 to 2026-06-30
+- Analysis window: 2022-01-01 to 2026-06-30. **2026 = January–June only**: in `zip_year`, `borough_year` and every yearly chart, never compare 2026 with full years as if it were one
 
 ## Tables
 
@@ -72,7 +72,7 @@ Always load them with `from data_loader import load_tables` (`src/data_loader.py
 | zip_filled | bool | ZIP filled in section 8 from the nearest crash or building with a ZIP (3,817 crashes) |
 | zip_match_m | float | Distance in metres to that nearest point (only for filled ZIPs; at most 500) |
 | dist_nearest_building_m | float | Distance in metres to the nearest affordable building completed by 30 Jun 2026 |
-| near_building_250m | bool | dist_nearest_building_m is 250 m or less (Q8) |
+| near_building_250m | boolean | dist_nearest_building_m is 250 m or less (Q8); missing (unknown) for crashes without coordinates |
 
 ## Definitions
 - serious_harm = severe_injuries + fatalities

@@ -19,7 +19,7 @@ TYPES = {
                   "all_counted_units": "Int64", "total_units": "Int64", "completion_year": "Int64"},
     "crashes": {"zip": "string", "street": "string", "crash_id": "Int64", "hour": "Int64", "severe_injuries": "Int64",
                 "fatalities": "Int64", "serious_harm": "Int64", "lookback_severe": "Int64",
-                "repeat_location": "boolean"},
+                "repeat_location": "boolean", "near_building_250m": "boolean"},
     "zip_year": {"zip": "string"},
     "zip_month": {"zip": "string"},
     "borough_year": {},

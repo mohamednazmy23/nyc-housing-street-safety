@@ -40,10 +40,10 @@ Last updated: 2026-11-04 (after integration, notebook sections 8–9)
 | R18 | Post-integration cleaning: join NaNs, redundant columns, dtype mismatches | ✅ | Section 9.1–9.3 (NaNs → 0, 17 checks, type fixes), D53 | Moustafa Maged |
 | R19 | Visualizations that validate cleaning steps | ✅ | 6.6 and 7.6: missing-cells charts (raw vs clean) and usable-rows charts | Mostafa Alaa, Ali Issa |
 | R20 | Descriptive markdown: justify decisions, alternatives, how insights were reached | 🟡 | Sections 2, 4, 5, 6, 7 done; rest empty | Each owner; Mohamed Nazmy (consistency) |
-| R21 | Prompt log of every AI prompt used | 🟡 | Notebook 12.3: rows 1–10 in task order (one row per task), all members so far (Mohamed's from his own log, task-related prompts only). New rows needed for integration, charts, website, story | Mohamed Nazmy, each member |
+| R21 | Prompt log of every AI prompt used | 🟡 | Notebook 12.3: rows 1–11 in task order (one row per task), all members so far (Mohamed's from his own log, task-related prompts only). New rows needed for integration, charts, website, story | Mohamed Nazmy, each member |
 | R22 | Dataset links in notebook | ✅ | Sections 2 and 12.1 | Mohamed Nazmy |
 | R23 | Clean code: descriptive names, modular functions | 🟡 | `src/charts.py` structure; EDA cells use descriptive names | Everyone |
-| R24 | Comments on complex logic (outliers, joins) | 🟡 | EDA cells commented; joins not written yet | Everyone |
+| R24 | Comments on complex logic (outliers, joins) | 🟡 | EDA, cleaning and integration cells commented (outlier rules, ZIP fill, BallTree joins); chart code not written yet | Everyone |
 | R25 | Notebook runs top to bottom | 🟡 | Runs with no errors through section 9 (Python 3.12, 4 Nov; 64 code cells); section 10 (charts) still empty | Mohamed Nazmy |
 
 ## Website
