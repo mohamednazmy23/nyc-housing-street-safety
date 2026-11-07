@@ -40,7 +40,7 @@ Last updated: 2026-11-07 (final pass)
 | R18 | Post-integration cleaning: join NaNs, redundant columns, dtype mismatches | ✅ | Section 9.1–9.3 (NaNs → 0, 17 checks, type fixes), D53 | Moustafa Maged |
 | R19 | Visualizations that validate cleaning steps | ✅ | 6.6 and 7.6: missing-cells charts (raw vs clean) and usable-rows charts | Mostafa Alaa, Ali Issa |
 | R20 | Descriptive markdown: justify decisions, alternatives, how insights were reached | ✅ | Every section 1–12: explanation after each code cell, decisions with alternatives, summary tables, findings and limitations | Each owner |
-| R21 | Prompt log of every AI prompt used | ✅ | Notebook 12.3: one row per task, in task order, every member (rows 1–21) | Each member |
+| R21 | Prompt log of every AI prompt used | ✅ | Notebook 12.3: one row per task, in task order, every member (rows 1–25) | Each member |
 | R22 | Dataset links in notebook | ✅ | Sections 2 and 12.1 | Mohamed Nazmy |
 | R23 | Clean code: descriptive names, modular functions | ✅ | `src/` and `app/`: one data function + one chart function per question, shared helpers; no unused imports (read-through 7 Nov) | Everyone |
 | R24 | Comments on complex logic (outliers, joins) | ✅ | Outlier rules, ZIP fill, BallTree joins, equal groups, search rules and deployment all commented | Everyone |
