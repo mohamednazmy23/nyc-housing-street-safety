@@ -1,7 +1,7 @@
 """Homes on Dangerous Streets: the project website (Dash).
 
 Run locally:   python app/app.py      then open http://127.0.0.1:8050
-On Vercel:     api/index.py imports `server` from this file.
+On Vercel:     Vercel finds this file and serves its Flask app `app` (deploy with: vercel --prod --yes).
 
 How it works: the six tables from data/processed/ are loaded once at start-up (src/data_loader.py). The filter bar
 (4 dropdowns + search box) only sets filters; the Generate Report button (or Enter in the search box) redraws all
@@ -140,11 +140,14 @@ def hero():
     ], className="hero")
 
 
-app = Dash(__name__, title="Homes on Dangerous Streets", assets_folder=str(HERE / "assets"),
+dash_app = Dash(__name__, title="Homes on Dangerous Streets", assets_folder=str(HERE / "assets"),
            meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}])
-server = app.server          # the WSGI app that Vercel (and gunicorn) serve
+# A web server needs the WSGI (Flask) app inside Dash, not the Dash object. Vercel looks for a variable called
+# "app" in app/app.py and sends every request to it, so "app" is the Flask app; "server" is the usual Dash name
+# for it (used by the tests)
+server = app = dash_app.server
 
-app.layout = html.Div([
+dash_app.layout = html.Div([
     hero(),
     filter_bar(),
     html.P("The charts change with the filters when you press Generate Report (or Enter in the search box). The text "
@@ -157,7 +160,7 @@ app.layout = html.Div([
 # ---------------------------------------------------------------------------------------------------------------
 # Generate Report: one callback redraws all 12 charts
 # ---------------------------------------------------------------------------------------------------------------
-@app.callback(
+@dash_app.callback(
     [Output(f"graph-{key}", "figure") for key in CHART_KEYS]
     + [Output(f"filter-{key}", "value") for key in FILTER_KEYS]
     + [Output("search", "value"), Output("status", "children")],
@@ -192,4 +195,4 @@ def generate_report(_generate, _submit, _reset, *values):
 
 
 if __name__ == "__main__":
-    app.run(debug=False, port=8050)
+    dash_app.run(debug=False, port=8050)
