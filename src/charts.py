@@ -9,6 +9,8 @@ Contract (every chart function follows it):
 - A chart always returns a figure, even when the filters leave no data
 - Each owner edits only their own two functions
 """
+import textwrap
+
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
@@ -75,13 +77,25 @@ def units_column(filters):
     }[filters.get("housing_type", "All")]
 
 
+# Characters per line before a title or a note wraps. Plotly can't re-wrap text when a chart gets narrower, so
+# these are a compromise: no cut-off on laptops and tablets; on a narrow phone a long title can still be cut,
+# which is why every chart on the website also has its takeaway as normal (wrapping) text above it
+TITLE_WIDTH, NOTE_WIDTH = 70, 110
+
+
+def wrap(text, width):
+    """Break long chart text into lines (Plotly does not wrap titles or annotations by itself)."""
+    return "<br>".join(textwrap.wrap(text, width)) or text
+
+
 def apply_style(fig, title):
-    """Give every chart the same look and a finding-style title."""
+    """Give every chart the same look and a finding-style title (wrapped so it is never cut off)."""
+    title_lines = wrap(title, TITLE_WIDTH).count("<br>") + 1
     fig.update_layout(
-        title=title,
+        title=wrap(title, TITLE_WIDTH),
         template="simple_white",
         font=dict(size=13),
-        margin=dict(l=40, r=20, t=60, b=40),
+        margin=dict(l=40, r=20, t=40 + 24 * title_lines, b=40),
     )
     return fig
 
@@ -290,12 +304,8 @@ def q2_after_opening(data, filters):
     fig.update_layout(legend_title_text="Building size (total units)")
     fig = apply_style(fig, title)
     # Fixed window: the year and housing-type filters don't apply, so say so on the chart
-    fig.add_annotation(text="Fixed window: New Construction buildings completed Jan 2023 – Jun 2025, "
-                            "12 months either side. Year and housing-type filters do not apply.",
-                       xref="paper", yref="paper", x=0, y=-0.22, xanchor="left", showarrow=False,
-                       font=dict(size=11, color="grey"))
-    fig.update_layout(margin=dict(b=100))
-    return fig
+    return note_below(fig, "Fixed window: New Construction buildings completed Jan 2023 – Jun 2025, "
+                           "12 months either side. Year and housing-type filters do not apply.", y=-0.22)
 
 
 WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -303,10 +313,13 @@ WINDOW_END = "2026-06-30"
 
 
 def note_below(fig, text, y=-0.2):
-    """Grey note under a chart (filters that don't apply, definitions, 'correlation is not causation')."""
-    fig.add_annotation(text=text, xref="paper", yref="paper", x=0, y=y, xanchor="left", showarrow=False,
-                       font=dict(size=11, color="grey"))
-    fig.update_layout(margin=dict(b=110))
+    """Grey note under a chart (filters that don't apply, definitions, 'correlation is not causation'),
+    wrapped into lines and anchored at its top, with room for it in the bottom margin."""
+    lines = wrap(text, NOTE_WIDTH)
+    fig.add_annotation(text=lines, xref="paper", yref="paper", x=0, y=y, xanchor="left", yanchor="top",
+                       align="left", showarrow=False, font=dict(size=11, color="grey"))
+    needed = 90 + 16 * (lines.count("<br>") + 1)
+    fig.update_layout(margin=dict(b=max(fig.layout.margin.b or 0, needed)))   # never shrink a larger margin
     return fig
 
 
@@ -661,13 +674,9 @@ def q7_growth_vs_change(data, filters):
     fig.update_yaxes(title=f"change in serious harm, {Q7_START_YEAR} → {Q7_END_YEAR} (%)", zeroline=True)
     fig.update_layout(legend_title_text="Borough")
     fig = apply_style(fig, title)
-    fig.add_annotation(text=(f"{len(table)} ZIPs with ≥{Q7_MIN_UNITS} New Construction units by end {Q7_START_YEAR} and "
-                             f"≥{Q7_MIN_CRASHES} serious crashes in {Q7_START_YEAR} · dashed lines = medians · "
-                             "correlation is not causation · fixed years: year, housing-type and severity filters do not apply"),
-                       xref="paper", yref="paper", x=0, y=-0.2, xanchor="left", showarrow=False,
-                       font=dict(size=11, color="grey"))
-    fig.update_layout(margin=dict(b=100))
-    return fig
+    return note_below(fig, f"{len(table)} ZIPs with ≥{Q7_MIN_UNITS} New Construction units by end {Q7_START_YEAR} and "
+                           f"≥{Q7_MIN_CRASHES} serious crashes in {Q7_START_YEAR} · dashed lines = medians · correlation "
+                           "is not causation · fixed years: year, housing-type and severity filters do not apply")
 
 
 # Q8 settings
@@ -781,13 +790,10 @@ def q8_dangerous_corridors(data, filters):
     fig.update_layout(
         map=dict(style="carto-positron", zoom=9.6 if filters.get("borough", "All") == "All" else 10.8,
                  center=dict(lat=float(near["lat"].mean()), lon=float(near["lon"].mean()))),
-        height=620, legend=dict(orientation="h", y=-0.08, x=0), margin=dict(l=40, r=20, t=90, b=90))
+        height=640, legend=dict(orientation="h", y=-0.08, x=0), margin=dict(l=40, r=20))
     fig.update_xaxes(title=harm_label, rangemode="tozero", row=1, col=2)
-    fig.add_annotation(text=("Street crashes only (no highways) · corridor = street + borough · buildings completed by "
-                             "Jun 2026 · hover a bar for repeat-danger share and nearby units"),
-                       xref="paper", yref="paper", x=0, y=-0.16, xanchor="left", showarrow=False,
-                       font=dict(size=11, color="grey"))
-    return fig
+    return note_below(fig, "Street crashes only (no highways) · corridor = street + borough · buildings completed by "
+                           "Jun 2026 · hover a bar for repeat-danger share and nearby units", y=-0.16)
 
 
 INCOME_TIERS = {"units_extremely_low": "Extremely low income", "units_very_low": "Very low income",
@@ -989,7 +995,7 @@ def q12_borough_balance(data, filters):
         part = table[table["year"] == year]
         return [go.Scatter(
             x=[row["units"]], y=[row["harm"]], mode="markers+text", name=row["borough"], text=[row["borough"]],
-            textposition="top center", showlegend=False,
+            textposition="top center", showlegend=False, cliponaxis=False,   # labels may go past the axes
             marker=dict(size=[max(row["cumulative_units"], 1)], sizemode="area", sizeref=sizeref, sizemin=6,
                         color=colours[row["borough"]], opacity=0.85, line=dict(width=1, color="white")),
             customdata=[[row["cumulative_units"], year]],
@@ -1015,22 +1021,24 @@ def q12_borough_balance(data, filters):
         title = (f"No borough moved to more affordable homes and less {label} from {first} to {last}: "
                  "housing output swings from year to year, harm barely moves")
     fig.update_layout(
-        updatemenus=[dict(type="buttons", x=0, y=-0.12, xanchor="left", showactive=False,
+        height=620,
+        updatemenus=[dict(type="buttons", x=0, y=-0.2, xanchor="left", yanchor="top", showactive=False,
                           buttons=[dict(label="▶ Play", method="animate",
                                         args=[None, dict(frame=dict(duration=900, redraw=True), fromcurrent=True,
                                                          transition=dict(duration=400))]),
                                    dict(label="❚❚ Pause", method="animate",
                                         args=[[None], dict(frame=dict(duration=0, redraw=False), mode="immediate")])])],
-        sliders=[dict(active=0, x=0.15, y=-0.08, len=0.85, currentvalue=dict(prefix="Year: "),
+        sliders=[dict(active=0, x=0.15, y=-0.2, yanchor="top", len=0.85, currentvalue=dict(prefix="Year: "),
                       steps=[dict(label=str(year), method="animate",
                                   args=[[str(year)], dict(mode="immediate", frame=dict(duration=400, redraw=True))])
                              for year in Q12_YEARS])])
     fig.update_xaxes(title=f"{UNIT_LABELS[units]} in the year", range=[0, table["units"].max() * 1.15])
     fig.update_yaxes(title=f"{HARM_LABELS[harm]} in the year", range=[0, table["harm"].max() * 1.15])
     fig = apply_style(fig, title)
+    fig.update_layout(margin=dict(b=230))     # room for the play buttons, the year slider and the note
     return note_below(fig, "Bubble size = affordable units completed since Jan 2022; dotted lines = each borough's path "
                            f"{first}–{last}. Full years only; all boroughs always shown (the borough and year filters do "
-                           "not apply). Includes records without a ZIP.", y=-0.3)
+                           "not apply). Includes records without a ZIP.", y=-0.45)
 
 
 # The website's Generate Report button loops over this registry

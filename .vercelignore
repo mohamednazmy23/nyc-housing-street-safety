@@ -1,0 +1,10 @@
+# Only the website is deployed: api/, app/, src/, data/processed/ and requirements.txt.
+venv/
+notebooks/
+docs/
+tests/
+data/raw/
+requirements-dev.txt
+*.ipynb
+__pycache__/
+.ipynb_checkpoints/
