@@ -1,0 +1,79 @@
+/* Homes on Dangerous Streets — one style for the whole page (Story doc: grey for context, one accent colour). */
+:root {
+  --ink: #1f2328;
+  --muted: #5c6670;
+  --line: #e3e5e8;
+  --paper: #ffffff;
+  --wash: #f6f7f8;
+  --accent: #d1495b;     /* same accent as src/charts.py ACCENT */
+  --accent-dark: #a8364a;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 150px; }
+body { margin: 0; background: var(--wash); color: var(--ink);
+       font: 16px/1.55 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+.page { max-width: 1180px; margin: 0 auto; padding: 0 16px 48px; }
+
+/* Hero */
+.hero { padding: 40px 0 24px; }
+.kicker { text-transform: uppercase; letter-spacing: .08em; color: var(--accent); font-weight: 700; margin: 0 0 6px; }
+.hero h1 { font-size: clamp(1.7rem, 3.6vw, 2.6rem); line-height: 1.15; margin: 0 0 8px; max-width: 900px; }
+.subtitle { color: var(--muted); margin: 0 0 24px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.stat { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.stat .big { display: block; font-size: 2rem; font-weight: 750; }
+.stat .big.accent { color: var(--accent); }
+.hook, .question { max-width: 860px; }
+.nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.nav a { color: var(--ink); text-decoration: none; border: 1px solid var(--line); background: var(--paper);
+         border-radius: 999px; padding: 4px 12px; font-size: .9rem; }
+.nav a:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Filter bar, pinned while scrolling */
+.filter-bar { position: sticky; top: 0; z-index: 50; background: rgba(255, 255, 255, .97); border: 1px solid var(--line);
+              border-radius: 10px; padding: 12px; box-shadow: 0 2px 10px rgba(0, 0, 0, .06); }
+.filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.filter label { display: block; font-size: .78rem; font-weight: 600; color: var(--muted); margin-bottom: 2px; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-top: 10px; }
+.search { flex: 1 1 320px; }
+.search input { width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: .95rem; }
+button { font: inherit; border-radius: 6px; padding: 8px 18px; cursor: pointer; border: 1px solid transparent; }
+button.primary { background: var(--accent); color: #fff; font-weight: 700; }
+button.primary:hover { background: var(--accent-dark); }
+button.secondary { background: var(--paper); border-color: #ccc; color: var(--ink); }
+.status { margin-top: 8px; font-size: .85rem; color: var(--muted); }
+.status .search-note { display: block; color: var(--accent-dark); }
+.hint { color: var(--muted); font-size: .88rem; margin: 10px 2px 0; }
+
+/* Acts and charts */
+.act { margin-top: 40px; }
+.act h2 { font-size: 1.6rem; margin: 0 0 4px; padding-top: 8px; border-top: 3px solid var(--ink); }
+.intro { color: var(--muted); margin-top: 0; }
+.chart-card { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 16px 16px 8px;
+              margin: 16px 0; }
+.chart-card h3 { margin: 0 0 4px; font-size: 1.1rem; }
+.takeaway { margin: 0 0 8px; max-width: 900px; }
+.graph { min-height: 450px; }
+.source { color: var(--muted); font-size: .78rem; margin: 4px 0 0; }
+
+.panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 8px; }
+.panel-box { background: var(--paper); border-left: 4px solid var(--accent); border-radius: 6px; padding: 12px 14px; }
+.panel-box h4 { margin: 0 0 4px; }
+.panel-box p { margin: 0; }
+
+/* Act 5 and About */
+.headlines { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.headline { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.headline-number { display: block; font-size: 2rem; font-weight: 750; color: var(--accent); }
+.headline p { margin: 4px 0 0; }
+.impact { width: 100%; border-collapse: collapse; background: var(--paper); font-size: .95rem; }
+.impact th, .impact td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.impact th { background: var(--wash); }
+a { color: var(--accent-dark); }
+
+@media (max-width: 640px) {
+  .filter-bar { position: static; }
+  .graph { min-height: 380px; }
+  .impact { font-size: .85rem; }
+}

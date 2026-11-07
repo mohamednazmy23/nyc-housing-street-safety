@@ -50,14 +50,14 @@ Last updated: 2026-11-04 (after integration, notebook sections 8–9)
 
 | ID | Requirement | Status | Where | Owner |
 | --- | --- | --- | --- | --- |
-| R26 | Multiple dropdown filters | 🟡 | `FILTER_OPTIONS` in `src/charts.py` (borough, year, housing type, severity) | Baraa Tantawy |
-| R27 | Search mode that sets filters from typed text | 🟡 | Planned | Baraa Tantawy |
-| R28 | "Generate Report" button updates all charts | 🟡 | `CHARTS` registry ready; app not built. **Missing = deduction** | Baraa Tantawy |
+| R26 | Multiple dropdown filters | ✅ | 4 dropdowns in the pinned filter bar (`app/app.py`): borough, year, housing type, crash measure | Baraa Tantawy |
+| R27 | Search mode that sets filters from typed text | ✅ | `src/search.py`; e.g. "Brooklyn 2022 new buildings" sets borough, year and housing type; unknown words reported | Baraa Tantawy |
+| R28 | "Generate Report" button updates all charts | ✅ | One callback redraws all 12 charts (about 1 s); Enter in the search box does the same | Baraa Tantawy |
 | R29 | Variety of interactive chart types (hover, zoom, filters) | ✅ | Scatter (Q1, Q7), line (Q2, Q4), heatmap (Q3, Q9), bar (Q5, Q6, Q10), stacked bar (Q11), map + bar (Q8), animated bubble (Q12); hover on all; zoom on all; filters per the Story table | Each member |
 | R30 | At least one chart showing both domains together | ✅ | Q1 scatter (housing units vs serious harm per ZIP) and Q8 map (crashes and buildings together) | Mohamed Nazmy, Baraa Tantawy |
-| R31 | Story section: question, key findings, limitations, benefit to NYC | 🟡 | Story doc drafted; findings and limits pending | Mostafa Ayman |
-| R32 | Real-time response, user-friendly, consistent layout | ❌ | — | Baraa Tantawy, Mostafa Ayman |
-| R33 | Deployed on a free platform and fully tested | ❌ | Vercel (D28); website-only `requirements.txt` ready (D32) | Baraa Tantawy |
+| R31 | Story section: question, key findings, limitations, benefit to NYC | ✅ | Website hero, 5 acts with panels, headline findings, limits, impact table (`app/story.py`); notebook section 11 still empty | Mostafa Ayman |
+| R32 | Real-time response, user-friendly, consistent layout | 🟡 | Tested locally: about 1 s per report, one style, pinned filters, mobile layout; to re-check on the deployed site | Baraa Tantawy, Mostafa Ayman |
+| R33 | Deployed on a free platform and fully tested | 🟡 | Vercel config ready (`api/index.py`, `vercel.json`, D71); deploy and live test pending | Baraa Tantawy |
 
 ## Repo and submission
 
