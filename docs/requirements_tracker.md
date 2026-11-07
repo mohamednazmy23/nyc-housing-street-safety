@@ -4,7 +4,7 @@ Source: *Project Milestone 1* description (deadline 9 Nov 2026) and *Dataset Cat
 Status: ✅ done · 🟡 partial · ❌ missing · ➖ not applicable.
 Owners come from the *NYC DEV Team Tasks* plan.
 
-Last updated: 2026-11-04 (after integration, notebook sections 8–9)
+Last updated: 2026-11-07 (final pass)
 
 ## Datasets
 
@@ -23,7 +23,7 @@ Last updated: 2026-11-04 (after integration, notebook sections 8–9)
 | R6 | Team of 4–6 | ✅ | 6 members | — |
 | R7 | 2 research questions per member (12 total), cross-domain | ✅ | Research Questions doc, Q1–Q12 | Each member |
 | R8 | 1 visualization per question (12 total) | ✅ | All 12 in `src/charts.py` and notebook 10.1–10.12, each with finding and limitations; all tested on 324 filter combinations | Each member |
-| R9 | Each member's contributions clearly documented | 🟡 | `docs/contributions_log.md` up to date; notebook Contributions table and README still empty | Mohamed Nazmy (notebook table), Mostafa Ayman (README) |
+| R9 | Each member's contributions clearly documented | ✅ | Notebook Contributions table; README team table; `docs/contributions_log.md` (C1–C46) | Whole team |
 
 ## Notebook
 
@@ -39,12 +39,12 @@ Last updated: 2026-11-04 (after integration, notebook sections 8–9)
 | R17 | Integration documented: join key, granularity and aggregation justified | ✅ | Section 8 (keys, ZIP fill tested, levels, distance join), D49–D52 | Moustafa Maged |
 | R18 | Post-integration cleaning: join NaNs, redundant columns, dtype mismatches | ✅ | Section 9.1–9.3 (NaNs → 0, 17 checks, type fixes), D53 | Moustafa Maged |
 | R19 | Visualizations that validate cleaning steps | ✅ | 6.6 and 7.6: missing-cells charts (raw vs clean) and usable-rows charts | Mostafa Alaa, Ali Issa |
-| R20 | Descriptive markdown: justify decisions, alternatives, how insights were reached | 🟡 | Sections 2, 4–10 done (each question: why, reading, check, finding, limitations); sections 1 and 11 empty | Each owner; Mostafa Ayman (1, 11) |
-| R21 | Prompt log of every AI prompt used | 🟡 | Notebook 12.3: rows 1–11 in task order (one row per task), all members so far (Mohamed's from his own log, task-related prompts only). New rows needed for integration, charts, website, story | Mohamed Nazmy, each member |
+| R20 | Descriptive markdown: justify decisions, alternatives, how insights were reached | ✅ | Every section 1–12: explanation after each code cell, decisions with alternatives, summary tables, findings and limitations | Each owner |
+| R21 | Prompt log of every AI prompt used | ✅ | Notebook 12.3: one row per task, in task order, every member (rows 1–21) | Each member |
 | R22 | Dataset links in notebook | ✅ | Sections 2 and 12.1 | Mohamed Nazmy |
-| R23 | Clean code: descriptive names, modular functions | 🟡 | `charts.py`: one data function + one chart function per question, shared helpers; final read-through pending | Everyone |
-| R24 | Comments on complex logic (outliers, joins) | 🟡 | EDA, cleaning and integration cells commented (outlier rules, ZIP fill, BallTree joins); chart code not written yet | Everyone |
-| R25 | Notebook runs top to bottom | 🟡 | Runs with no errors through section 10 (Python 3.12, 5 Nov; 88 code cells); sections 1 and 11 still empty | Mohamed Nazmy |
+| R23 | Clean code: descriptive names, modular functions | ✅ | `src/` and `app/`: one data function + one chart function per question, shared helpers; no unused imports (read-through 7 Nov) | Everyone |
+| R24 | Comments on complex logic (outliers, joins) | ✅ | Outlier rules, ZIP fill, BallTree joins, equal groups, search rules and deployment all commented | Everyone |
+| R25 | Notebook runs top to bottom | ✅ | Final run 7 Nov: 88 code cells, no errors, outputs saved (Python 3.12) | Mohamed Nazmy |
 
 ## Website
 
@@ -64,7 +64,7 @@ Last updated: 2026-11-04 (after integration, notebook sections 8–9)
 | ID | Requirement | Status | Where | Owner |
 | --- | --- | --- | --- | --- |
 | R34 | All code, notebook and website files in a GitHub repo | ✅ | Notebook, `src/`, `app/`, processed data, tests and logs on `main` | Whole team |
-| R35 | README: setup, deployment, each member's contribution | ❌ | — | Mostafa Ayman |
-| R36 | Story quality: clear question, honest limits, no unsupported causal claims | 🟡 | Story doc framework | Mostafa Ayman, everyone |
-| R37 | One email to ICS503Data@gmail.com: member IDs, repo link, deploy link, dataset links | ❌ | Member IDs collected (notebook Team table); deploy link missing | Baraa Tantawy |
-| R38 | Everything in the repo before 9 Nov 2026 | ❌ | — | Whole team |
+| R35 | README: setup, deployment, each member's contribution | ✅ | `README.md`: findings, data, repository, setup, notebook, website, tests, deployment, team and contributions | Mostafa Ayman |
+| R36 | Story quality: clear question, honest limits, no unsupported causal claims | ✅ | Notebook sections 1 and 11, website story; "correlation is not causation" on scatter charts; limitations under every question | Mostafa Ayman, everyone |
+| R37 | One email to ICS503Data@gmail.com: member IDs, repo link, deploy link, dataset links | ❌ | Everything collected (IDs, repo, live site, datasets); to send | Baraa Tantawy |
+| R38 | Everything in the repo before 9 Nov 2026 | 🟡 | All work on `main` once the final-pass PR is merged | Whole team |
