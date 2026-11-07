@@ -71,7 +71,7 @@ See notebook section 4 and its 4.x summary table (13 issues). Not repeated here.
 
 **What and how:** works on a copy of `df_housing`; result `housing_clean` (9,551 rows × 38 columns, data-dictionary names). Decisions D34–D41; full table in notebook 6.x. Count completions with `completed_in_window`, not `is_completed`.
 
-**Checks that settled the open questions from the handoff (section 19, item 18):**
+**Checks that settled the open questions from the housing EDA (section 4):**
 
 | Question | Answer from code |
 | --- | --- |

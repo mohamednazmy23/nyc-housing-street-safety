@@ -23,7 +23,7 @@ Last updated: 2026-11-07 (final pass)
 | R6 | Team of 4–6 | ✅ | 6 members | — |
 | R7 | 2 research questions per member (12 total), cross-domain | ✅ | Research Questions doc, Q1–Q12 | Each member |
 | R8 | 1 visualization per question (12 total) | ✅ | All 12 in `src/charts.py` and notebook 10.1–10.12, each with finding and limitations; all tested on 324 filter combinations | Each member |
-| R9 | Each member's contributions clearly documented | ✅ | Notebook Contributions table; README team table; `docs/contributions_log.md` (C1–C46) | Whole team |
+| R9 | Each member's contributions clearly documented | ✅ | Notebook Contributions table; README team table; `docs/contributions_log.md` (C1–C45) | Whole team |
 
 ## Notebook
 
@@ -55,7 +55,7 @@ Last updated: 2026-11-07 (final pass)
 | R28 | "Generate Report" button updates all charts | ✅ | One callback redraws all 12 charts (about 1 s); Enter in the search box does the same | Baraa Tantawy |
 | R29 | Variety of interactive chart types (hover, zoom, filters) | ✅ | Scatter (Q1, Q7), line (Q2, Q4), heatmap (Q3, Q9), bar (Q5, Q6, Q10), stacked bar (Q11), map + bar (Q8), animated bubble (Q12); hover on all; zoom on all; filters per the Story table | Each member |
 | R30 | At least one chart showing both domains together | ✅ | Q1 scatter (housing units vs serious harm per ZIP) and Q8 map (crashes and buildings together) | Mohamed Nazmy, Baraa Tantawy |
-| R31 | Story section: question, key findings, limitations, benefit to NYC | ✅ | Website hero, 5 acts with panels, headline findings, limits, impact table (`app/story.py`); notebook section 11 still empty | Mostafa Ayman |
+| R31 | Story section: question, key findings, limitations, benefit to NYC | ✅ | Website hero, 5 acts with panels, headline findings, limits, impact table (`app/story.py`); notebook sections 1 and 11 | Mostafa Ayman |
 | R32 | Real-time response, user-friendly, consistent layout | ✅ | Live site: every report in 1.6–3.4 s, one style, pinned filters, mobile layout | Baraa Tantawy, Mostafa Ayman |
 | R33 | Deployed on a free platform and fully tested | ✅ | Vercel: https://nyc-housing-street-safety.vercel.app; tested live (page, scripts, Generate Report, search, Reset, narrow filters), D74 | Baraa Tantawy |
 
@@ -67,4 +67,4 @@ Last updated: 2026-11-07 (final pass)
 | R35 | README: setup, deployment, each member's contribution | ✅ | `README.md`: findings, data, repository, setup, notebook, website, tests, deployment, team and contributions | Mostafa Ayman |
 | R36 | Story quality: clear question, honest limits, no unsupported causal claims | ✅ | Notebook sections 1 and 11, website story; "correlation is not causation" on scatter charts; limitations under every question | Mostafa Ayman, everyone |
 | R37 | One email to ICS503Data@gmail.com: member IDs, repo link, deploy link, dataset links | ❌ | Everything collected (IDs, repo, live site, datasets); to send | Baraa Tantawy |
-| R38 | Everything in the repo before 9 Nov 2026 | 🟡 | All work on `main` once the final-pass PR is merged | Whole team |
+| R38 | Everything in the repo before 9 Nov 2026 | ✅ | Notebook, website, data, tests, README and logs on `main` (7 Nov) | Whole team |
