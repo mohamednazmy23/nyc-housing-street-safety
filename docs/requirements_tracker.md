@@ -51,7 +51,7 @@ Last updated: 2026-11-04 (after integration, notebook sections 8–9)
 | ID | Requirement | Status | Where | Owner |
 | --- | --- | --- | --- | --- |
 | R26 | Multiple dropdown filters | ✅ | 4 dropdowns in the pinned filter bar (`app/app.py`): borough, year, housing type, crash measure | Baraa Tantawy |
-| R27 | Search mode that sets filters from typed text | ✅ | `src/search.py`; e.g. "Brooklyn 2022 new buildings" sets borough, year and housing type; unknown words reported | Baraa Tantawy |
+| R27 | Search mode that sets filters from typed text | ✅ | `src/search.py` (on Enter); e.g. "Brooklyn 2022 new buildings" sets borough, year and housing type; "citywide" resets borough; ignored words and extra values reported; `tests/test_search.py` | Baraa Tantawy |
 | R28 | "Generate Report" button updates all charts | ✅ | One callback redraws all 12 charts (about 1 s); Enter in the search box does the same | Baraa Tantawy |
 | R29 | Variety of interactive chart types (hover, zoom, filters) | ✅ | Scatter (Q1, Q7), line (Q2, Q4), heatmap (Q3, Q9), bar (Q5, Q6, Q10), stacked bar (Q11), map + bar (Q8), animated bubble (Q12); hover on all; zoom on all; filters per the Story table | Each member |
 | R30 | At least one chart showing both domains together | ✅ | Q1 scatter (housing units vs serious harm per ZIP) and Q8 map (crashes and buildings together) | Mohamed Nazmy, Baraa Tantawy |

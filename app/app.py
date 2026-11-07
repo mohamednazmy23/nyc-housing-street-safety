@@ -13,7 +13,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE.parent / "src"), str(HERE)]
 
-from dash import Dash, Input, Output, State, ctx, dcc, html  # noqa: E402
+from dash import Dash, Input, Output, State, ctx, dcc, html, no_update  # noqa: E402
 
 import charts  # noqa: E402
 import story  # noqa: E402
@@ -42,6 +42,16 @@ def describe(filters):
     return "Showing · " + " · ".join(parts)
 
 
+def build_figures(filters):
+    """All 12 charts for one set of filters, through the shared chart functions."""
+    return [charts.CHARTS[key](DATA, filters) for key in CHART_KEYS]
+
+
+# The default view is built once at start-up and put straight into the page, so opening the page doesn't
+# redraw all 12 charts; the callback below only runs on Generate Report, Enter in the search box, or Reset
+DEFAULT_FIGURES = dict(zip(CHART_KEYS, build_figures(charts.DEFAULT_FILTERS)))
+
+
 # ---------------------------------------------------------------------------------------------------------------
 # Layout
 # ---------------------------------------------------------------------------------------------------------------
@@ -64,7 +74,7 @@ def filter_bar():
             html.Button("Generate Report", id="generate", n_clicks=0, className="primary"),
             html.Button("Reset", id="reset", n_clicks=0, className="secondary"),
         ], className="actions"),
-        html.Div(id="status", className="status", role="status"),
+        html.Div(describe(charts.DEFAULT_FILTERS), id="status", className="status", role="status"),
     ], className="filter-bar", id="filter-bar")
 
 
@@ -72,8 +82,8 @@ def chart_card(key, heading, takeaway):
     return html.Article([
         html.H3(heading),
         html.P(takeaway, className="takeaway"),
-        dcc.Loading(dcc.Graph(id=f"graph-{key}", config=GRAPH_CONFIG, className="graph"), type="dot",
-                    color=charts.ACCENT),
+        dcc.Loading(dcc.Graph(id=f"graph-{key}", figure=DEFAULT_FIGURES[key], config=GRAPH_CONFIG, className="graph"),
+                    type="dot", color=charts.ACCENT),
         html.P(f"Question {key[1:].upper()} · notebook section 10.{key[1:]}", className="source"),
     ], className="chart-card", id=f"card-{key}")
 
@@ -153,23 +163,32 @@ app.layout = html.Div([
     + [Output("search", "value"), Output("status", "children")],
     Input("generate", "n_clicks"), Input("search", "n_submit"), Input("reset", "n_clicks"),
     [State(f"filter-{key}", "value") for key in FILTER_KEYS], State("search", "value"),
+    prevent_initial_call=True,           # the page already holds the default charts
 )
 def generate_report(_generate, _submit, _reset, *values):
-    """Read the dropdowns (and the search box, whose terms win), then redraw every chart (charts.CHARTS)."""
+    """Redraw every chart (charts.CHARTS) for the chosen filters.
+
+    - Generate Report: uses the dropdowns only.
+    - Enter in the search box: the filters the text mentions replace those dropdowns (also "All", e.g. for
+      "citywide"); the others stay as they are. The box is then cleared, so the text can't override a later
+      dropdown choice.
+    - Reset: back to the default view.
+    """
     *dropdowns, search_text = values
     filters = dict(zip(FILTER_KEYS, dropdowns))
-    notes = []
+    search_box, notes = no_update, []
     if ctx.triggered_id == "reset":
-        filters, search_text = dict(charts.DEFAULT_FILTERS), ""
-    elif search_text and search_text.strip():
-        searched, understood, not_understood = parse_search(search_text)
-        filters.update({key: value for key, value in searched.items() if value != "All"})
-        notes.append("Search understood: " + (", ".join(understood) if understood else "nothing"))
-        if not_understood:
-            notes.append("ignored: " + ", ".join(not_understood))
-    figures = [charts.CHARTS[key](DATA, filters) for key in CHART_KEYS]
+        filters, search_box = dict(charts.DEFAULT_FILTERS), ""
+    elif ctx.triggered_id == "search":
+        chosen, understood, ignored = parse_search(search_text)
+        filters.update(chosen)
+        search_box = ""
+        notes.append(f'Search "{(search_text or "").strip()}" understood: '
+                     + (", ".join(understood) if understood else "nothing"))
+        if ignored:
+            notes.append("ignored: " + ", ".join(ignored))
     status = [html.Span(describe(filters))] + ([html.Span(" · ".join(notes), className="search-note")] if notes else [])
-    return figures + [filters[key] for key in FILTER_KEYS] + [search_text or "", status]
+    return build_figures(filters) + [filters[key] for key in FILTER_KEYS] + [search_box, status]
 
 
 if __name__ == "__main__":

@@ -77,7 +77,10 @@ def units_column(filters):
     }[filters.get("housing_type", "All")]
 
 
-TITLE_WIDTH, NOTE_WIDTH = 95, 150      # characters per line before a title or a note wraps
+# Characters per line before a title or a note wraps. Plotly can't re-wrap text when a chart gets narrower, so
+# these are a compromise: no cut-off on laptops and tablets; on a narrow phone a long title can still be cut,
+# which is why every chart on the website also has its takeaway as normal (wrapping) text above it
+TITLE_WIDTH, NOTE_WIDTH = 70, 110
 
 
 def wrap(text, width):

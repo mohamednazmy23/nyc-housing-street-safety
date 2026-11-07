@@ -10,7 +10,9 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 150px; }
+/* Nav links must land below the pinned filter bar: about 155 px tall on a wide screen and up to about 220 px
+   when the dropdowns wrap onto two rows. On phones the bar is not pinned (see the end of this file). */
+html { scroll-behavior: smooth; scroll-padding-top: 240px; }
 body { margin: 0; background: var(--wash); color: var(--ink);
        font: 16px/1.55 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 .page { max-width: 1180px; margin: 0 auto; padding: 0 16px 48px; }
@@ -73,6 +75,7 @@ button.secondary { background: var(--paper); border-color: #ccc; color: var(--in
 a { color: var(--accent-dark); }
 
 @media (max-width: 640px) {
+  html { scroll-padding-top: 12px; }
   .filter-bar { position: static; }
   .graph { min-height: 380px; }
   .impact { font-size: .85rem; }
