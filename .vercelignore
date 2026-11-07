@@ -1,4 +1,5 @@
-# Only the website is deployed: api/, app/, src/, data/processed/ and requirements.txt.
+# Only the website is deployed: app/ (Vercel runs the Flask app `app` in app/app.py), src/, data/processed/
+# and requirements.txt.
 venv/
 notebooks/
 docs/

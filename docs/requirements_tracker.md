@@ -56,14 +56,14 @@ Last updated: 2026-11-04 (after integration, notebook sections 8–9)
 | R29 | Variety of interactive chart types (hover, zoom, filters) | ✅ | Scatter (Q1, Q7), line (Q2, Q4), heatmap (Q3, Q9), bar (Q5, Q6, Q10), stacked bar (Q11), map + bar (Q8), animated bubble (Q12); hover on all; zoom on all; filters per the Story table | Each member |
 | R30 | At least one chart showing both domains together | ✅ | Q1 scatter (housing units vs serious harm per ZIP) and Q8 map (crashes and buildings together) | Mohamed Nazmy, Baraa Tantawy |
 | R31 | Story section: question, key findings, limitations, benefit to NYC | ✅ | Website hero, 5 acts with panels, headline findings, limits, impact table (`app/story.py`); notebook section 11 still empty | Mostafa Ayman |
-| R32 | Real-time response, user-friendly, consistent layout | 🟡 | Tested locally: about 1 s per report, one style, pinned filters, mobile layout; to re-check on the deployed site | Baraa Tantawy, Mostafa Ayman |
-| R33 | Deployed on a free platform and fully tested | 🟡 | Vercel config ready (`api/index.py`, `vercel.json`, D71); deploy and live test pending | Baraa Tantawy |
+| R32 | Real-time response, user-friendly, consistent layout | ✅ | Live site: every report in 1.6–3.4 s, one style, pinned filters, mobile layout | Baraa Tantawy, Mostafa Ayman |
+| R33 | Deployed on a free platform and fully tested | ✅ | Vercel: https://nyc-housing-street-safety.vercel.app; tested live (page, scripts, Generate Report, search, Reset, narrow filters), D74 | Baraa Tantawy |
 
 ## Repo and submission
 
 | ID | Requirement | Status | Where | Owner |
 | --- | --- | --- | --- | --- |
-| R34 | All code, notebook and website files in a GitHub repo | 🟡 | Structure, notebook, `charts.py`, logs, processed data (`data/processed/`) and loader pushed; app missing | Whole team |
+| R34 | All code, notebook and website files in a GitHub repo | ✅ | Notebook, `src/`, `app/`, processed data, tests and logs on `main` | Whole team |
 | R35 | README: setup, deployment, each member's contribution | ❌ | — | Mostafa Ayman |
 | R36 | Story quality: clear question, honest limits, no unsupported causal claims | 🟡 | Story doc framework | Mostafa Ayman, everyone |
 | R37 | One email to ICS503Data@gmail.com: member IDs, repo link, deploy link, dataset links | ❌ | Member IDs collected (notebook Team table); deploy link missing | Baraa Tantawy |
